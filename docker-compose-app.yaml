@@ -8,6 +8,9 @@ services:
         networks:
             codo:
                 ipv4_address: 172.22.0.6
+        environment:
+            # 环境变量注入配置例子
+            - "CODO_GATEWAY.appName=${CODO_GATEWAY_DEFAULT_APP_NAME}"
         ports:
             - "8888:8888"
             - "11000:11000"

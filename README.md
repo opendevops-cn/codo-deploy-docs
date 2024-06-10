@@ -73,9 +73,8 @@ docker-compose -f docker-compose-middle.yaml up -d
 
 - 修改配置
 ```shell
-# todo 此处使用已构建的镜像需要把配置挂载出来，或者添加 gateway支持环境变量
 # 使用[.env](.env)中的配置   
-sh init_gateway.sh ./codo-gateway/conf/app.json
+cp ./codo-gateway/conf/app.template.json ./codo-gateway/conf/app.json
 cp ./codo-agent-server/conf/conf.template.yaml ./codo-agent-server/conf.yaml # agent-server 配置文件 
 ```
 - 构建镜像
