@@ -2,7 +2,7 @@ version: "3"
 services:
 
   mysql:
-    image: mysql:8.0
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/mysql:8.0
     restart: always
     user: root
     privileged: true
@@ -25,7 +25,7 @@ services:
 
 
   redis:
-    image: redis:6.2
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/redis:6.2
     restart: always
     user: root
     privileged: true
@@ -70,7 +70,7 @@ services:
     hostname: rabbitmq-server  # 设置固定的主机名
 
   etcd:
-    image: bitnami/etcd:3.5
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/etcd:3.5
     privileged: true
     restart: always
     volumes:
