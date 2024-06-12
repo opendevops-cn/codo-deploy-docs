@@ -7,7 +7,8 @@ services:
         hostname: gateway
         networks:
             codo:
-                ipv4_address: 172.22.0.6
+        volumes:
+            - ./codo-gateway/conf/app.json:/usr/local/openresty/nginx/conf/app.json
         environment:
             # 环境变量注入配置例子
             - "CODO_GATEWAY.appName=${CODO_GATEWAY_DEFAULT_APP_NAME}"

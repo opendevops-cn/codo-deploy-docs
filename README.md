@@ -74,7 +74,7 @@ docker-compose -f docker-compose-middle.yaml up -d
 - 修改配置
 ```shell
 # 使用[.env](.env)中的配置   
-cp ./codo-gateway/conf/app.template.json ./codo-gateway/conf/app.json
+cp ./codo-gateway/conf/app.example.json ./codo-gateway/conf/app.json
 cp ./codo-agent-server/conf/conf.template.yaml ./codo-agent-server/conf.yaml # agent-server 配置文件 
 ```
 - 构建镜像
