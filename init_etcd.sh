@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
   send_request() {
-  curl "http://127.0.0.1:8888$1" -H "X-Api-Token: e09d6153f1c15395144794GtmAhRT4" -X POST -d "$2"
+  curl "http://127.0.0.1:8888$1" -H "X-Api-Token: e09d6153f1c15395144794GtmAhR" -X POST -d "$2"
 }
 
 # 配置路由
