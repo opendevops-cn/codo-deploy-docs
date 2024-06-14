@@ -10,31 +10,31 @@ services:
                 ipv4_address: 172.22.0.6
         environment:
             # 环境变量注入配置例子
-        - CODO_GATEWAY.appName=codo-gateway
-        - CODO_GATEWAY.env=test
-        - CODO_GATEWAY.etcd.http_host=http://${DEFAULT_ETCD_HOST}:${DEFAULT_ETCD_PORT}
-        - CODO_GATEWAY.etcd.data_prefix=/my/gw/
-        - CODO_GATEWAY.jwt_auth.key=auth_key
-        - CODO_GATEWAY.jwt_auth.token_secret=${DEFAULT_TOKEN_SECRET}
-        - CODO_GATEWAY.codo_rbac.key=auth_key
-        - CODO_GATEWAY.codo_rbac.token_secret=${DEFAULT_TOKEN_SECRET}
-        - CODO_GATEWAY.sso2internal.sso_token_secret=external_token_secret
-        - CODO_GATEWAY.sso2internal.sso_jwt_key=sso_token
-        - CODO_GATEWAY.sso2internal.internal_token_secret=${DEFAULT_TOKEN_SECRET}
-        - CODO_GATEWAY.sso2internal.internal_jwt_key=auth_key
-        - CODO_GATEWAY.mfa.mfa_secret=${DEFAULT_TOKEN_SECRET}
-        - CODO_GATEWAY.mfa.mfa_key=mfa_key
-        - CODO_GATEWAY.plugins_config.redis-logger.host=${DEFAULT_REDIS_HOST}
-        - CODO_GATEWAY.plugins_config.redis-logger.port=${DEFAULT_REDIS_PORT}
-        - CODO_GATEWAY.plugins_config.redis-logger.auth_pwd=${DEFAULT_REDIS_PASSWORD}
-        - CODO_GATEWAY.plugins_config.redis-logger.db=2
-        - CODO_GATEWAY.plugins_config.redis-logger.alive_time=604801
-        - CODO_GATEWAY.plugins_config.redis-logger.channel=gw
-        - CODO_GATEWAY.plugins_config.redis-logger.full_log=no
-        - CODO_GATEWAY.admin.jwt_secret=${DEFAULT_TOKEN_SECRET}
-        - CODO_GATEWAY.admin.accounts=admin
-        - CODO_GATEWAY.tokens=${CODO_GATEWAY_DEFAULT_API_TOKEN}
-        - CODO_GATEWAY.plugins=default_plugin,discovery_plugin,tracing_plugin,rewrite_plugin,jwt_plugin,codo_rbac_plugin,kafka-logger,redis-logger,limit-req,referer-restriction,ip-restriction,cors_plugin,sso2internal
+            - CODO_GATEWAY.appName=codo-gateway
+            - CODO_GATEWAY.env=test
+            - CODO_GATEWAY.etcd.http_host=http://${DEFAULT_ETCD_HOST}:${DEFAULT_ETCD_PORT}
+            - CODO_GATEWAY.etcd.data_prefix=${DEFAULT_ETCD_PREFIX}
+            - CODO_GATEWAY.jwt_auth.key=auth_key
+            - CODO_GATEWAY.jwt_auth.token_secret=${DEFAULT_TOKEN_SECRET}
+            - CODO_GATEWAY.codo_rbac.key=auth_key
+            - CODO_GATEWAY.codo_rbac.token_secret=${DEFAULT_TOKEN_SECRET}
+            - CODO_GATEWAY.sso2internal.sso_token_secret=external_token_secret
+            - CODO_GATEWAY.sso2internal.sso_jwt_key=sso_token
+            - CODO_GATEWAY.sso2internal.internal_token_secret=${DEFAULT_TOKEN_SECRET}
+            - CODO_GATEWAY.sso2internal.internal_jwt_key=auth_key
+            - CODO_GATEWAY.mfa.mfa_secret=${DEFAULT_TOKEN_SECRET}
+            - CODO_GATEWAY.mfa.mfa_key=mfa_key
+            - CODO_GATEWAY.plugins_config.redis-logger.host=${DEFAULT_REDIS_HOST}
+            - CODO_GATEWAY.plugins_config.redis-logger.port=${DEFAULT_REDIS_PORT}
+            - CODO_GATEWAY.plugins_config.redis-logger.auth_pwd=${DEFAULT_REDIS_PASSWORD}
+            - CODO_GATEWAY.plugins_config.redis-logger.db=2
+            - CODO_GATEWAY.plugins_config.redis-logger.alive_time=604801
+            - CODO_GATEWAY.plugins_config.redis-logger.channel=gw
+            - CODO_GATEWAY.plugins_config.redis-logger.full_log=no
+            - CODO_GATEWAY.admin.jwt_secret=${DEFAULT_TOKEN_SECRET}
+            - CODO_GATEWAY.admin.accounts=admin
+            - CODO_GATEWAY.tokens=${CODO_GATEWAY_DEFAULT_API_TOKEN}
+            - CODO_GATEWAY.plugins=default_plugin,discovery_plugin,tracing_plugin,rewrite_plugin,jwt_plugin,codo_rbac_plugin,kafka-logger,redis-logger,limit-req,referer-restriction,ip-restriction,cors_plugin,sso2internal
         ports:
             - "8888:8888"
             - "11000:11000"
