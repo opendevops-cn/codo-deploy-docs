@@ -87,6 +87,7 @@ services:
 
 networks:
     codo:
+        name: codo
         ipam:
             driver: default
             config:
