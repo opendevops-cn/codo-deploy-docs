@@ -63,7 +63,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 - 构建中间件
 
 ```shell
-#mkdir -p rabbitmq/rabbitmq
 docker-compose -f docker-compose-middle.yaml build
 ```
 
@@ -74,9 +73,8 @@ chmod 777 ./etcd/data
 ```
 
 - 启动中间件
-
+mysql、rabbitmq构建镜像时完成初始化操作
 ```shell
-# mysql、rabbitmq构建镜像时完成初始化操作
 docker-compose -f docker-compose-middle.yaml up -d
 ```
 
@@ -94,7 +92,6 @@ docker-compose -f docker-compose-app.yaml up -d
 
 ```shell
 sh ./init_app.sh
-
 ```
 
 - 管理后台创建超级用户
