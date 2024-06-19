@@ -83,6 +83,8 @@ chmod 777 ./etcd/data
 
 - 启动应用镜像
 
+> 强制拉取和创建 `docker-compose -f docker-compose-app.yaml up -d --pull --force-recreate`
+
 ```shell
 docker-compose -f docker-compose-app.yaml up -d
 ```
