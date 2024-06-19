@@ -66,16 +66,17 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose -f docker-compose-middle.yaml build
 ```
 
+- 启动中间件
+  mysql、rabbitmq构建镜像时完成初始化操作
+
+```shell
+docker-compose -f docker-compose-middle.yaml up -d
+```
+
 - 修改etcd文件夹权限
 
 ```shell
 chmod 777 ./etcd/data
-```
-
-- 启动中间件
-mysql、rabbitmq构建镜像时完成初始化操作
-```shell
-docker-compose -f docker-compose-middle.yaml up -d
 ```
 
 ---
@@ -95,6 +96,8 @@ sh ./init_app.sh
 ```
 
 - 管理后台创建超级用户
+
+> 默认的admin 密码为 1qazXSW@
 
 ```shell
 docker exec -it codo_mg python3 manage.py createsuperuser

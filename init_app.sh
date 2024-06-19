@@ -12,6 +12,7 @@ echo "开始初始化数据库"
 docker exec -it codo_mg python3 manage.py db_init
 
 echo "开始重启应用"
+docker-compose -f docker-compose-middle.yaml restart
 docker-compose -f docker-compose-app.yaml restart
 
 echo "开始服务和路由注册"
