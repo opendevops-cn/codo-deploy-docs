@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 执行docker命令获取token
-TOKEN=$(docker exec codo_mg python3 manage.py token_init | tr -d '\\r')
+TOKEN=$(docker exec codo_mg python3 manage.py token_init | tr -d '\r\n')
 
 # 更新或替换.env文件中的CODO_AUTH_KEY变量的值
 sed -i "s/^CODO_AUTH_KEY=.*/CODO_AUTH_KEY=\"$TOKEN\"/" .env
