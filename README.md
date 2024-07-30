@@ -56,12 +56,11 @@
 
 --- 
 
-- 修改配置文件 <span style="color: yellow;">【可选】[.env](.env)
-  中已经配置项目中所需的账密信息,不修该则使用全局默认配置</span>
-
+- 配置文件修改【可选】[.env](.env) <span style="color: yellow;"> 中已经配置项目中所需的账密信息，不修该则使用默认配置</span>
+- 数据库初始化【可选】：[db_init.sql](db_init.sql) <span style="color: yellow;"> 在 Docker 部署 MySQL 时默认导入。
 --- 
 
-- 部署中间件  <span style="color: yellow;"> 如需依赖已有中间件则需要修改[.env](.env)配置
+- 部署中间件 如需依赖已有中间件则需要修改[.env](.env)配置
 
 ```shell
 sh ./deploy_middleware.sh
