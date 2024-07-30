@@ -63,10 +63,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 --- 
 
-- 部署中间件
+- 部署中间件  <span style="color: yellow;">【可选】如需依赖已有中间件则需要修改[.env](.env)配置
 
 ```shell
-sh ./init_middle.sh
+sh ./deploy_middleware.sh
+
 ```
 
 --- 
