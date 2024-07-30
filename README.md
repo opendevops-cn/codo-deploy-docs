@@ -37,22 +37,22 @@
 ## 快速部署
 
 - 安装 Docker 和 Docker-compose
-  -Docker安装命令参考 **[Rocky Linux 9 操作系统]**
+    - Docker安装命令参考 **[Rocky Linux 9 操作系统]**
 
-```shell
-sudo dnf install dnf-plugins-core
-sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-sudo dnf install docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker
-sudo systemctl enable docker
-```
+  ```shell
+  sudo dnf install dnf-plugins-core
+  sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  sudo dnf install docker-ce docker-ce-cli containerd.io
+  sudo systemctl start docker
+  sudo systemctl enable docker
+  ```
 
-- docker-compose安装命令参考 **[Rocky Linux 9 操作系统]**
+    - docker-compose安装命令参考 **[Rocky Linux 9 操作系统]**
 
-```shell
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-```
+  ```shell
+  sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+  ```
 
 --- 
 

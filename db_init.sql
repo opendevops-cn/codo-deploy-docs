@@ -11,3 +11,4 @@ GRANT ALL PRIVILEGES ON *.* TO 'codo'@'%' WITH GRANT OPTION;
 
 -- Flush privileges
 FLUSH PRIVILEGES;
+
