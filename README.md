@@ -4,21 +4,19 @@
 
 - 本项目采用微服务架构，完成全球一站式运维体系建设
 
-- 项目说明
-
-```shell
-codo
-├── services              # 服务目录
-│   ├── codo-gateway      # API网关、流量入口
-│   ├── codo-admin        # 管理后台
-│   ├── codo-cmdb         # 配置平台、多云资源管理
-│   ├── codo-flow         # 任务平台、作业调度执行
-│   ├── codo-notice       # 通知中心
-│   ├── codo-kerrigan     # 配置中心
-├── ├── codo-frontend-converge      # 前端入口
-├── ├── codo-agent-server      # 执行任务依赖agent
-├── 
-```
+| 目录                           | 说明          |
+|------------------------------|-------------|
+| `codo`                       | 根目录         |
+| ├── `services`               | 服务          |
+| │   ├── `codo-gateway`       | 天门网关、后端流量入口 |
+| │   ├── `codo-admin`         | 管理后台        |
+| │   ├── `codo-cmdb`          | 配置平台、多云资源管理 |
+| │   ├── `codo-flow`          | 任务平台、作业调度   |
+| │   ├── `codo-notice`        | 消息中心（升级中）   |
+| │   ├── `codo-kerrigan`      | 配置中心        |
+| │   ├── `codo-cnmp`          | 云原生平台（暂未上线） |
+| │   └── `codo-agent-server`  | 执行任务依赖agent |
+| └── `codo-frontend-converge` | 前端基座、前端流量入口 |
 
 ## 环境依赖
 
@@ -90,7 +88,7 @@ docker exec -it codo_mg python3 manage.py createsuperuser
 
 ## Agent 部署
 
-在部署应用程序时，默认情况下会同时部署 Agent Server。默认的 Server 地址设置为 ip:8081。
+在部署应用程序时，默认情况下会同时部署 Agent Server。默认的 Server 地址设置为 `ip:8081`。
 
 [点击这里下载Agent](https://github.com/opendevops-cn/codo-agent-server)
 
