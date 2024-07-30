@@ -60,36 +60,18 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 - 修改配置文件 <span style="color: yellow;">【可选】[.env](.env)
   中已经配置项目中所需的账密信息,不修该则使用全局默认配置</span>
-- 构建中间件
+
+--- 
+
+- 部署中间件
 
 ```shell
-docker-compose -f docker-compose-middle.yaml build
-```
-
-- 启动中间件
-  mysql、rabbitmq构建镜像时完成初始化操作
-
-```shell
-docker-compose -f docker-compose-middle.yaml up -d
-```
-
-- 修改etcd文件夹权限
-
-```shell
-chmod 777 ./etcd/data
-```
-
----
-
-- 启动应用镜像
-
-```shell
-docker-compose -f docker-compose-app.yaml up -d
+sh ./init_middle.sh
 ```
 
 --- 
 
-- 初始化系统
+- 启动服务并初始化
 
 ```shell
 sh ./init_app.sh
