@@ -9,8 +9,7 @@ services:
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - ./mysql/data:/var/lib/mysql
-            - ./db_init.sql:/docker-entrypoint-init.d/init1.sql
-            - ./flow_init.sql:/docker-entrypoint-init.d/init2.sql
+            - ./db_init.sql:/docker-entrypoint-init.d/db_init.sql
         environment:
             - TZ=Asia/Shanghai
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}

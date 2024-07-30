@@ -65,7 +65,6 @@
 
 ```shell
 sh ./deploy_middleware.sh
-
 ```
 
 --- 
