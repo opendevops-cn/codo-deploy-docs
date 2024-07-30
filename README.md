@@ -2,7 +2,7 @@
 
 ## 项目简介
 
-- 本项目采用微服务架构，完成全球一站式运维体系建设
+> CODO 项目基于微服务架构，旨在构建全球一站式运维体系。项目目录结构如下：
 
 | 目录                           | 说明          |
 |------------------------------|-------------|
@@ -36,8 +36,8 @@
 
 ## 快速部署
 
-- 安装docker以及docker-compose工具
-- docker安装命令参考 **[rockylinux操作系统]**
+- 安装 Docker 和 Docker-compose
+  -Docker安装命令参考 **[Rocky Linux 9 操作系统]**
 
 ```shell
 sudo dnf install dnf-plugins-core
@@ -47,7 +47,7 @@ sudo systemctl start docker
 sudo systemctl enable docker
 ```
 
-- docker-compose安装命令参考 **[rockylinux操作系统]**
+- docker-compose安装命令参考 **[Rocky Linux 9 操作系统]**
 
 ```shell
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
