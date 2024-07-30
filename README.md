@@ -116,3 +116,8 @@ codo-agent --url ws://proxy_ip:20800/api/v1/codo/agent?clientId=codo-test:8888 -
 ```
 
 [Agent安装文档](https://github.com/opendevops-cn/codo-agent-server/blob/main/%E5%AE%89%E8%A3%85%E6%96%87%E6%A1%A3.md)
+
+
+## License
+
+本项目采用 [GPL v3.0](https://www.gnu.org/licenses/gpl-3.0.html) 许可。
