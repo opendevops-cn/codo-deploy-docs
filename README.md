@@ -56,8 +56,10 @@
 
 --- 
 
-- 配置文件修改【可选】[.env](.env) <span style="color: yellow;"> 中已经配置项目中所需的账密信息，不修该则使用默认配置</span>
+- 配置文件修改【可选】[.env](.env) <span style="color: yellow;">
+  中已经配置项目中所需的账密信息，不修该则使用默认配置</span>
 - 数据库初始化【可选】：[db_init.sql](db_init.sql) <span style="color: yellow;"> 在 Docker 部署 MySQL 时默认导入。
+
 --- 
 
 - 部署中间件 如需依赖已有中间件则需要修改[.env](.env)配置
@@ -90,6 +92,8 @@ docker exec -it codo_mg python3 manage.py createsuperuser
 
 [点击这里下载Agent](https://github.com/opendevops-cn/codo-agent-server)
 
+【验证推荐】[linux部署文档](codo-agent-install-steps.md)
+
 > <font color="red">注意：在生产环境中，为了确保数据传输的安全性，使用 Agent Server 和 Agent Proxy
 > 时需要为这两个组件配置证书。这样可以保护系统免受潜在的中间人攻击或其他安全威胁。</font>
 
@@ -116,7 +120,6 @@ codo-agent --url ws://proxy_ip:20800/api/v1/codo/agent?clientId=codo-test:8888 -
 ```
 
 [Agent安装文档](https://github.com/opendevops-cn/codo-agent-server/blob/main/%E5%AE%89%E8%A3%85%E6%96%87%E6%A1%A3.md)
-
 
 ## License
 
