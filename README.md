@@ -90,9 +90,9 @@ docker exec -it codo_mg python3 manage.py createsuperuser
 
 在部署应用程序时，默认情况下会同时部署 Agent Server。默认的 Server 地址设置为 `ip:8081`。
 
-[点击这里下载Agent](https://github.com/opendevops-cn/codo-agent-server)
+###  <font color="red"> 【验证推荐】</font> [linux部署文档](codo-agent-install-steps.md)
 
-【验证推荐】[linux部署文档](codo-agent-install-steps.md)
+[点击这里下载Agent](https://github.com/opendevops-cn/codo-agent-server)
 
 > <font color="red">注意：在生产环境中，为了确保数据传输的安全性，使用 Agent Server 和 Agent Proxy
 > 时需要为这两个组件配置证书。这样可以保护系统免受潜在的中间人攻击或其他安全威胁。</font>
