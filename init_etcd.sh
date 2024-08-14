@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-  send_request() {
+send_request() {
   curl "http://127.0.0.1:8888$1" -H "X-Api-Token: e09d6153f1c15395144794GtmAhR" -X POST -d "$2"
 }
 
@@ -43,7 +43,7 @@ send_request "/api/admin/routes/save" '{
     "prefix": "/api/p/*",
     "service_name": "mg",
     "status": 1,
-   "plugins":["rewrite","discovery"],
+   "plugins":["rewrite","discovery","redis-logger", "CRBAC"],
     "props": {
         "rewrite_url_regex": "^/api/p/",
         "rewrite_replace": "/"
@@ -57,8 +57,11 @@ send_request "/api/admin/routes/save" '{
     "prefix": "/api/agent/*",
     "service_name": "agent",
     "status": 1,
-    "plugins": ["rewrite","tracing","discovery"],
-    "props": {}
+    "plugins": ["rewrite","tracing","discovery","CRBAC"],
+    "props": {
+      "rewrite_url_regex": "^/api/agent/",
+      "rewrite_replace": "/api/"
+    }
 }'
 
 send_request "/api/admin/routes/save" '{
@@ -68,7 +71,7 @@ send_request "/api/admin/routes/save" '{
     "prefix": "/api/cmdb/*",
     "service_name": "cmdb",
     "status": 1,
-    "plugins":["rewrite","tracing","discovery","redis-logger"],
+    "plugins":["rewrite","tracing","discovery","redis-logger", "CRBAC"],
     "props": {"rewrite_url_regex":"^\/api\/cmdb\/","rewrite_replace":"\/"}
 }'
 
@@ -79,7 +82,7 @@ send_request "/api/admin/routes/save" '{
     "prefix": "/api/job/*",
     "service_name": "job",
     "status": 1,
-    "plugins":["rewrite","tracing","discovery"],
+    "plugins":["rewrite","tracing","discovery","redis-logger", "CRBAC"],
     "props": {"rewrite_url_regex":"^\/api\/job\/","rewrite_replace":"\/"}
 }'
 
