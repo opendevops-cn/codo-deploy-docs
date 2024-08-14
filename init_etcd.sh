@@ -14,7 +14,8 @@ send_request "/api/admin/routes/save" '{
     "plugins": [
         "discovery",
         "tracing",
-        "rewrite"
+        "rewrite",
+        "CRBAC"
     ],
     "props": {
         "rewrite_url_regex": "^/api/mg/",
