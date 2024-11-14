@@ -207,4 +207,11 @@ send_request "/api/admin/services/save" '{
     "status": 1
 }'
 
+send_request "/api/admin/services/save" '{
+    "key": "/cnmp/172.22.0.20:8000",
+    "service_name": "cnmp",
+    "upstream": "172.22.0.20:8000",
+    "weight": 1,
+    "status": 1
+}'
 exit 0

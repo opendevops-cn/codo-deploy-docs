@@ -14,7 +14,7 @@
 | │   ├── `codo-flow`          | 任务平台、作业调度   |
 | │   ├── `codo-notice`        | 消息中心（升级中）   |
 | │   ├── `codo-kerrigan`      | 配置中心        |
-| │   ├── `codo-cnmp`          | 云原生平台（暂未上线） |
+| │   ├── `codo-cnmp`          | 云原生平台       |
 | │   └── `codo-agent-server`  | 执行任务依赖agent |
 | └── `codo-frontend-converge` | 前端基座、前端流量入口 |
 

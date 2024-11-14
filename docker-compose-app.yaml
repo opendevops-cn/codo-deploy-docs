@@ -68,8 +68,6 @@ services:
         environment:
             - DEFAULT_DB_DBNAME=${CODO_ADMIN_DEFAULT_DB_DBNAME}
             - READONLY_DB_DBNAME=${CODO_ADMIN_DEFAULT_DB_DBNAME}
-        ports:
-            - "8000:8000"
 
     codo_cmdb:
         restart: unless-stopped
@@ -143,7 +141,7 @@ services:
 
     codo_cron_job:
         restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-cron-job:latest
+        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-cronjob:latest
         container_name: codo_cron_job
         networks:
             codo:
@@ -217,8 +215,6 @@ services:
                 ipv4_address: 172.22.0.18
         volumes:
             - /sys/fs/cgroup:/sys/fs/cgroup
-        ports:
-            - "8030:8000"
 
     codo-agent-server:
         restart: unless-stopped
@@ -239,6 +235,20 @@ services:
             - "8081:8081"
             - "8083:8083"
 
+    codo-cnmp:
+        restart: unless-stopped
+        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cnmp:latest
+        container_name: codo_cnmp
+        env_file:
+            - .env
+        environment:
+            - DEFAULT_DB_DBNAME=${CODO_CNMP_DEFAULT_DB_DBNAME}
+            - READONLY_DB_DBNAME=${CODO_CNMP_DEFAULT_DB_DBNAME}
+        networks:
+            codo:
+                ipv4_address: 172.22.0.20
+        volumes:
+            - /sys/fs/cgroup:/sys/fs/cgroup
 
 networks:
     codo:
