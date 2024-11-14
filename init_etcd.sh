@@ -77,6 +77,17 @@ send_request "/api/admin/routes/save" '{
 }'
 
 send_request "/api/admin/routes/save" '{
+    "key": "/api/cnmp/*",
+    "protocol": "http",
+    "remark": "cnmp",
+    "prefix": "/api/cnmp/*",
+    "service_name": "cnmp",
+    "status": 1,
+    "plugins":["rewrite","tracing","discovery","redis-logger", "CRBAC"],
+    "props": {"rewrite_url_regex":"^\/api\/cnmp\/","rewrite_replace":"\/"}
+}'
+
+send_request "/api/admin/routes/save" '{
     "key": "/api/job/*",
     "protocol": "http",
     "remark": "job",
