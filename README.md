@@ -1,10 +1,12 @@
 # codo项目部署
 
 ## 项目简介
+
 - 本项目采用微服务架构，完成一站式运维体系建设。
 
 - 项目说明
 -
+
 ```text
 codo
 ├── codo-admin # 管理后台
@@ -20,6 +22,7 @@ codo
 ```
 
 ## 环境依赖
+
 - 操作系统：Rocky Linux 9.1以上 x86_64
 - Python版本：3.9
 - Docker版本：最新稳定版本
@@ -30,5 +33,6 @@ codo
 - etcd: 3.5
 
 ## 部署方式
-- [k8s-helm 部署](./helm-deploy)
-- [docker 部署](./docker-deploy)
+- [k8s-helm 部署](./helm-deploy/README.md)
+- [docker 部署](./docker-deploy/README.md)
+- [安装 codo-agent](./codo-agent-install-steps.md)
