@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "flowExecTask.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "flowExecTask.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "flowExecTaskReplicas is required" .Values.flowExecTaskReplicas }}
+  selector:
+    matchLabels:
+      {{- include "flowExecTask.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "flowExecTask.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "flowExecTaskImage is required" .Values.flowExecTaskImage }}
+        name: {{ template "flowExecTask.uname" . }}-image
+        imagePullPolicy: Always
+        env:
+        - name: SERVICE_NAME
+          value: "exec-task"
+        resources:
+          limits:
+            cpu: {{ required "flowExecTaskCPULimit is required" .Values.flowExecTaskCPULimit }}
+            memory: {{ required "flowExecTaskMemoryLimit is required" .Values.flowExecTaskMemoryLimit }}
+            ephemeral-storage: {{ required "flowExecTaskEphemeralStorageLimit is required" .Values.flowExecTaskEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "flowExecTaskCPURequire is required" .Values.flowExecTaskCPURequire }}
+            memory: {{ required "flowExecTaskMemoryRequire is required" .Values.flowExecTaskMemoryRequire }}
+            ephemeral-storage: {{ required "flowExecTaskEphemeralStorageRequire is required" .Values.flowExecTaskEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: flow-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: flow-conf
+          configMap:
+            name: {{ template "flowExecTask.uname" . }}
+

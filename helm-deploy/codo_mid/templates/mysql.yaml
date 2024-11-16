@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  labels:
+    app: mysql
+data:
+  my.cnf: |
+    [mysqld]
+    skip-host-cache
+    skip-name-resolve
+    bind-address=0.0.0.0
+    default-authentication-plugin=mysql_native_password
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  serviceName: mysql
+  replicas: {{ .Values.mysqlReplicaCount }}
+  selector:
+    matchLabels:
+      app: mysql
+  volumeClaimTemplates:
+    - apiVersion:  v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: pvc-mysql-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ required "The mysqlStorage is required" .Values.mysqlStorage }}
+        volumeMode: Filesystem
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: "{{ .Values.mysqlmage.repository }}:{{ .Values.mysqlmage.tag }}"
+          ports:
+            - containerPort: {{ .Values.mysqlService.port }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.mysql.rootPassword | quote }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysql.database | quote }}
+            - name: MYSQL_USER
+              value: {{ .Values.mysql.user | quote }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.mysql.password | quote }}
+          volumeMounts:
+            - name: mysql-config
+              mountPath: /etc/mysql/conf.d/my.cnf
+              subPath: my.cnf
+            - name: pvc-mysql-data
+              subPath: mysql/data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-config
+          configMap:
+            name: mysql-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  ports:
+    - port: {{ .Values.mysqlService.port }}
+      targetPort: 3306
+  selector:
+    app: mysql
+  type: {{ .Values.mysqlService.type }}

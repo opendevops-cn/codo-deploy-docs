@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "frontend.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "frontend.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "frontendReplicas is required" .Values.frontendReplicas }}
+  selector:
+    matchLabels:
+      {{- include "frontend.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "frontend.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "frontendImage is required" .Values.frontendImage }}
+        name: {{ template "frontend.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "frontendCPULimit is required" .Values.frontendCPULimit }}
+            memory: {{ required "frontendMemoryLimit is required" .Values.frontendMemoryLimit }}
+            ephemeral-storage: {{ required "frontendEphemeralStorageLimit is required" .Values.frontendEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "frontendCPURequire is required" .Values.frontendCPURequire }}
+            memory: {{ required "frontendMemoryRequire is required" .Values.frontendMemoryRequire }}
+            ephemeral-storage: {{ required "frontendEphemeralStorageRequire is required" .Values.frontendEphemeralStorageRequire }}
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: codo-frontend-conf
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+      volumes:
+        - name: codo-frontend-conf
+          configMap:
+            name: {{ template "frontend.uname" . }}

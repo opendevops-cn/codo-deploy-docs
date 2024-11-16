@@ -1,0 +1,12 @@
+CHART NAME: {{ .Chart.Name }}
+CHART VERSION: {{ .Chart.Version }}
+APP VERSION: {{ .Chart.AppVersion }}
+
+{{- if .Values.diagnosticMode.enabled }}
+-----------------------------------欢迎使用CODO------------------------------------
+CODO Web 地址: {{ .Values.frontendIngressHost }}
+
+如有bug或者不合理的地方，可以通过邮箱反馈1084430062@qq.com
+----------------------------------------------------------------------------------
+
+{{- end }}

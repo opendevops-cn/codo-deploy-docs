@@ -1,0 +1,329 @@
+# 命名空间
+namespace: codo-dev
+# app 应用;
+app: codo
+# env 环境;
+env: dev
+# 镜像仓库(可以为空)
+imagePullSecret: ""
+# Python项目运行秘钥，任意随机字符即可, 用于加密 cookie 里的数据
+cookieSecretPy: "replace-me!!!"
+# jwt key, 任意随机字符即可, 用于生成 JWT TOKEN
+tokenSecretPy: "replace-me!!!"
+
+# 通知服务配置，非必须
+noticeConf: |
+  notice_conf_map = {
+    'dd_work': {
+      'appkey': '',
+      'appsecret': '',
+      'agent_id': ''
+    },
+    'fs_work': {
+      'app_id': '',
+      'app_secret': '',
+      'access_url': 'https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal'
+    },
+    'email_conf': {
+      const.EMAIL_HOST: "",
+      const.EMAIL_PORT: 465,
+      const.EMAIL_HOST_USER: "",
+      const.EMAIL_HOST_PASSWORD: "",
+      const.EMAIL_USE_SSL: True,
+      const.EMAIL_USE_TLS: False
+    }
+  }
+
+
+
+# 是否开启Debug模式
+diagnosticMode:
+  enabled: false
+# --------------------------- 中间件配置  ------------------------------------ #
+redis:
+  host: "redis.codo-dev.svc.cluster.local"
+  port: 6379
+  passwd: root_password
+
+mysql:
+  host: "mysql.codo-dev.svc.cluster.local"
+  port: 3306
+  user: root
+  passwd: root_password
+
+etcd:
+  host: "etcd.codo-dev.svc.cluster.local"
+  user: root
+  port: 2379
+  passwd: root_password
+  prefix: "/codo/gw/"
+
+rabbitmq:
+  host: "rabbitmq.codo-dev.svc.cluster.local"
+  port: 5672
+  user: codo
+  passwd: root_password
+  vhost: codo
+
+# 非必须配置
+consul:
+  host: "consul.codo-dev.svc.cluster.local"
+  port: 8500
+  scheme: http
+  token:
+
+# --------------------------- Frontend Web  ------------------------------------ #
+frontendServiceName: frontend
+frontendImage: frontend
+frontendReplicas: 1
+frontendListenPort: 80
+frontendCPURequire: 250m
+frontendCPULimit: 500m
+frontendMemoryRequire: 64Mi
+frontendMemoryLimit: 256Mi
+frontendEphemeralStorageRequire: 5Gi
+frontendEphemeralStorageLimit: 5Gi
+frontendIngressHost: codo-dev.codo.com
+frontendIngressIPRestriction: |
+  # 放通内网
+  allow  10.0.0.0/8 ;
+  allow  192.168.0.0/16;
+  deny   all ;
+frontendIngressWS: |
+  nginx.ingress.kubernetes.io/proxy-read-timeout: "600"  
+  nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+
+# --------------------------- Gateway ------------------------------------ #
+gatewayServiceName: gateway
+gatewayRedisDB: 1
+gatewayImage: gateway
+# 这里的Token需要在admin服务执行[python manage.py  token_init]获取
+gatewayInnerApiToken: "replace-me!!!"
+gatewayReplicas: 1
+gatewayListenPort: 8888
+gatewayCPURequire: 250m
+gatewayCPULimit: 500m
+gatewayMemoryRequire: 64Mi
+gatewayMemoryLimit: 256Mi
+gatewayEphemeralStorageRequire: 5Gi
+gatewayEphemeralStorageLimit: 5Gi
+gatewayIngressHost: "tianmen-dev.codo.com"
+gatewayIngressIPRestriction: |
+  # 放通内网
+  allow  10.0.0.0/8 ;
+  allow  192.168.0.0/16;
+  deny   all ;
+gatewayLogLevel: "info"
+gatewayAdminAccounts:
+  - "admin"
+gatewaySSO2Internal:
+  sso_token_secret: "replace-me!!!"
+
+# --------------------------- Admin ------------------------------------ #
+adminv4ServiceName: adminv4
+adminv4DB: codo_admin
+adminv4RedisDB: 7
+adminv4Image: adminv4
+adminv4Replicas: 1
+adminv4ListenPort: 8000
+adminv4CPURequire: 250m
+adminv4CPULimit: 1
+adminv4MemoryRequire: 256Mi
+adminv4MemoryLimit: 512Mi
+adminv4EphemeralStorageRequire: 5Gi
+adminv4EphemeralStorageLimit: 5Gi
+adminv4UserCenterConf: |
+  # 用户中心鉴权配置
+  uc_conf = {
+  }
+
+# --------------------------- CMDB ------------------------------------ #
+cmdbServiceName: cmdb
+cmdbDB: codo_cmdb
+cmdbRedisDB: 9
+cmdbImage: cmdb
+cmdbReplicas: 1
+cmdbListenPort: 8000
+cmdbCPURequire: 500m
+cmdbCPULimit: 1
+cmdbMemoryRequire: 512Mi
+cmdbMemoryLimit: 2Gi
+cmdbEphemeralStorageRequire: 5Gi
+cmdbEphemeralStorageLimit: 5Gi
+cmdbJmsApi:
+  url: ""
+  keyId: ""
+  secret: ""
+
+# --------------------------- Kerrigan ------------------------------------ #
+kerriganServiceName: kerrigan
+kerriganDB: codo_kerrigan
+kerriganImage: kerrigan
+kerriganReplicas: 1
+kerriganListenPort: 8000
+kerriganCPURequire: 250m
+kerriganCPULimit: 500m
+kerriganMemoryRequire: 512Mi
+kerriganMemoryLimit: 1Gi
+kerriganEphemeralStorageRequire: 5Gi
+kerriganEphemeralStorageLimit: 5Gi
+
+# --------------------------- Flow Agent Log ------------------------------------ #
+flowAgentLogServiceName: flow-agent-log
+flowAgentLogDB: codo_flow
+flowAgentLogRedisDB: 9
+flowAgentLogImage: flow-agent-log
+flowAgentLogReplicas: 1
+flowAgentLogCPURequire: 1
+flowAgentLogCPULimit: 2
+flowAgentLogMemoryRequire: 2Gi
+flowAgentLogMemoryLimit: 4Gi
+flowAgentLogEphemeralStorageRequire: 5Gi
+flowAgentLogEphemeralStorageLimit: 5Gi
+
+# --------------------------- Flow Cronjob ------------------------------------ #
+flowCronjobServiceName: flow-cronjob
+flowCronjobDB: codo_flow
+flowCronjobRedisDB: 9
+flowCronjobImage: flow-cronjob
+flowCronjobReplicas: 1
+flowCronjobCPURequire: 1
+flowCronjobCPULimit: 2
+flowCronjobMemoryRequire: 2Gi
+flowCronjobMemoryLimit: 4Gi
+flowCronjobEphemeralStorageRequire: 5Gi
+flowCronjobEphemeralStorageLimit: 5Gi
+
+# --------------------------- Flow Control ------------------------------------ #
+flowControlServiceName: flow-control
+flowControlDB: codo_flow
+flowControlRedisDB: 9
+flowControlListenPort: 8000
+flowControlImage: flow-control
+flowControlReplicas: 1
+flowControlCPURequire: 250m
+flowControlCPULimit: 500m
+flowControlMemoryRequire: 64Mi
+flowControlMemoryLimit: 256Mi
+flowControlEphemeralStorageRequire: 5Gi
+flowControlEphemeralStorageLimit: 5Gi
+
+# --------------------------- Flow Exec Task ------------------------------------ #
+flowExecTaskServiceName: flow-exec-task
+flowExecTaskDB: codo_flow
+flowExecTaskRedisDB: 9
+flowExecTaskImage: flow-exec-task
+flowExecTaskReplicas: 1
+flowExecTaskCPURequire: 250m
+flowExecTaskCPULimit: 500m
+flowExecTaskMemoryRequire: 512Mi
+flowExecTaskMemoryLimit: 1Gi
+flowExecTaskEphemeralStorageRequire: 5Gi
+flowExecTaskEphemeralStorageLimit: 5Gi
+
+# --------------------------- Flow Loop ------------------------------------ #
+flowLoopServiceName: flow-loop
+flowLoopDB: codo_flow
+flowLoopRedisDB: 9
+flowLoopImage: flow-loop
+flowLoopReplicas: 1
+flowLoopCPURequire: 250m
+flowLoopCPULimit: 500m
+flowLoopMemoryRequire: 512Mi
+flowLoopMemoryLimit: 1Gi
+flowLoopEphemeralStorageRequire: 5Gi
+flowLoopEphemeralStorageLimit: 5Gi
+
+# --------------------------- Flow Queue ------------------------------------ #
+flowQueueServiceName: flow-queue
+flowQueueDB: codo_flow
+flowQueueRedisDB: 9
+flowQueueImage: flow-queue
+flowQueueReplicas: 1
+flowQueueCPURequire: 250m
+flowQueueCPULimit: 500m
+flowQueueMemoryRequire: 512Mi
+flowQueueMemoryLimit: 1Gi
+flowQueueEphemeralStorageRequire: 5Gi
+flowQueueEphemeralStorageLimit: 5Gi
+
+# --------------------------- Flow Task Log ------------------------------------ #
+flowTaskLogServiceName: flow-task-log
+flowTaskLogDB: codo_flow
+flowTaskLogRedisDB: 9
+flowTaskLogImage: flow-task-log
+flowTaskLogReplicas: 1
+flowTaskLogCPURequire: 250m
+flowTaskLogCPULimit: 500m
+flowTaskLogMemoryRequire: 512Mi
+flowTaskLogMemoryLimit: 1Gi
+flowTaskLogEphemeralStorageRequire: 5Gi
+flowTaskLogEphemeralStorageLimit: 5Gi
+
+# --------------------------- Agent Server ------------------------------------ #
+agentServerServiceName: agent-server
+agentServerDB: codo_agent_server
+agentServerRedisDB: 1
+agentServerRedisPublishDB: 2
+agentServerImage: agent-server
+agentServerReplicas: 1
+agentServerListenPort: 8000
+agentServerPromListenPort: 8003
+agentServerRpcListenPort: 8001
+agentServerMeshListenPort: 9998
+agentServerWSListenPort: 8002
+agentServerCPURequire: 250m
+agentServerCPULimit: 500m
+agentServerMemoryRequire: 512Mi
+agentServerMemoryLimit: 1Gi
+agentServerEphemeralStorageRequire: 5Gi
+agentServerEphemeralStorageLimit: 5Gi
+agentServerLogLevel: DEBUG
+agentServerIngressWS: |
+  nginx.ingress.kubernetes.io/proxy-read-timeout: "600"  
+  nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+agentServerIngressWsHost: codo-agent-server-dev.codo.com
+agentServerIngressIPRestriction: |
+  # 放通内网
+  allow  10.0.0.0/8 ;
+  allow  192.168.0.0/16;
+  deny   all ;
+agentServerConfCACrt: |
+  -----BEGIN CERTIFICATE-----
+  -----END CERTIFICATE-----
+agentServerConfCAKey: |
+  -----BEGIN PRIVATE KEY-----
+  -----END PRIVATE KEY-----
+
+# --------------------------- Cnmp ------------------------------------ #
+cnmpServiceName: cnmp
+cnmpDB: codo_cnmp
+cnmpRedisDB: 16
+cnmpImage: cnmp
+cnmpReplicas: 1
+cnmpCPURequire: 512m
+cnmpCPULimit: 1
+cnmpMemoryRequire: 1Gi
+cnmpMemoryLimit: 2Gi
+cnmpEphemeralStorageRequire: 5Gi
+cnmpEphemeralStorageLimit: 5Gi
+cnmpListenPort: 8000
+cnmpWSListenPort: 8002
+cnmpPprofListenPort: 8004
+cnmpPromListenPort: 8003
+# cnmp key：16位
+cnmpSecret: "asdfg12345qazxsw"
+
+
+# --------------------------- Cloud Agent Operator ------------------------------------ #
+
+cloudAgentOperatorImage: "cloud-agent-operator:latest"
+aoRedisDB: 1
+aoOtelLogLevel: "INFO"
+aoOtelTraceEndpoint: ""
+aoOtelTraceInsecure: true
+
+aoAgentServerURL: "ws://codo-biz-agent-server:8002/api/v1/codo/agent?clientId=cloud-agent-operator:6666"
+aoBizID: "525"
+aoRowLimit: 2000
+aoMaxCMD: 100

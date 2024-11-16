@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "flowTaskLog.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "flowTaskLog.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "flowTaskLogReplicas is required" .Values.flowTaskLogReplicas }}
+  selector:
+    matchLabels:
+      {{- include "flowTaskLog.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "flowTaskLog.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "flowTaskLogImage is required" .Values.flowTaskLogImage }}
+        name: {{ template "flowTaskLog.uname" . }}-image
+        imagePullPolicy: Always
+        env:
+        - name: SERVICE_NAME
+          value: "task-log"
+        resources:
+          limits:
+            cpu: {{ required "flowTaskLogCPULimit is required" .Values.flowTaskLogCPULimit }}
+            memory: {{ required "flowTaskLogMemoryLimit is required" .Values.flowTaskLogMemoryLimit }}
+            ephemeral-storage: {{ required "flowTaskLogEphemeralStorageLimit is required" .Values.flowTaskLogEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "flowTaskLogCPURequire is required" .Values.flowTaskLogCPURequire }}
+            memory: {{ required "flowTaskLogMemoryRequire is required" .Values.flowTaskLogMemoryRequire }}
+            ephemeral-storage: {{ required "flowTaskLogEphemeralStorageRequire is required" .Values.flowTaskLogEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: flow-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: flow-conf
+          configMap:
+            name: {{ template "flowTaskLog.uname" . }}
+

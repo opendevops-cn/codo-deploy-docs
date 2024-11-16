@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "flowControl.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "flowControl.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "flowControlReplicas is required" .Values.flowControlReplicas }}
+  selector:
+    matchLabels:
+      {{- include "flowControl.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "flowControl.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "flowControlImage is required" .Values.flowControlImage }}
+        name: {{ template "flowControl.uname" . }}-image
+        imagePullPolicy: Always
+        env:
+        - name: SERVICE_NAME
+          value: "control-api"
+        resources:
+          limits:
+            cpu: {{ required "flowControlCPULimit is required" .Values.flowControlCPULimit }}
+            memory: {{ required "flowControlMemoryLimit is required" .Values.flowControlMemoryLimit }}
+            ephemeral-storage: {{ required "flowControlEphemeralStorageLimit is required" .Values.flowControlEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "flowControlCPURequire is required" .Values.flowControlCPURequire }}
+            memory: {{ required "flowControlMemoryRequire is required" .Values.flowControlMemoryRequire }}
+            ephemeral-storage: {{ required "flowControlEphemeralStorageRequire is required" .Values.flowControlEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: flow-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: flow-conf
+          configMap:
+            name: {{ template "flowControl.uname" . }}
+

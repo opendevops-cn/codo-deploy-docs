@@ -1,0 +1,75 @@
+# --------------------------- Redis ------------------------------------ #
+# Redis 配置
+redisPort: 6379
+redisPassword: "root_password"
+# Redis 镜像
+redisImage:
+  repository: redis
+  tag: "6.2.11"
+  pullPolicy: IfNotPresent
+reidsReplicaCount: 1
+
+# --------------------------- Mysql ------------------------------------ #
+mysqlReplicaCount: 1
+mysqlStorage: 10Gi
+mysqlmage:
+  repository: mysql
+  tag: "8.0"
+  pullPolicy: IfNotPresent
+
+mysqlService:
+  type: ClusterIP
+  port: 3306
+
+mysql:
+  rootPassword: root_password
+  database: mydb
+  user: user
+  password: user_password
+
+# --------------------------- Etcd ------------------------------------ #
+EtcdReplicaCount: 1
+etcdStorage: 10Gi
+# etcd 镜像设置
+EtcdImage:
+  init_image: debian:stable-slim
+  repository: bitnami/etcd
+  tag: "3.5"
+  pullPolicy: IfNotPresent
+
+# etcd 服务设置
+EtcdService:
+  type: ClusterIP
+  port: 2379
+
+# etcd 的环境变量
+etcd:
+  name: "etcd-node"
+  initialCluster: "etcd-node=http://etcd-node:2380"
+  listenClientURLs: "http://0.0.0.0:2379"
+  listenPeerURLs: "http://0.0.0.0:2380"
+  advertiseClientURLs: "http://etcd-node:2379"
+  initialAdvertisePeerURLs: "http://etcd-node:2380"
+  rootUser: root  # 根用户
+  rootPassword: "root_password"  # 根用户密码
+  authEnabled: flase  # 启用认证
+
+# --------------------------- Rabbitmq ------------------------------------ #
+# RabbitMQ 配置
+rabbitmq:
+  username: codo
+  password: root_password
+  erlangCookie: "secret-cookie"
+
+# 镜像配置
+MQImage:
+  repository: bitnami/rabbitmq
+  tag: "3.13.6-debian-12-r1"
+  pullPolicy: IfNotPresent
+
+# 服务配置
+MQService:
+  type: ClusterIP
+  amqpPort: 5672
+  managementPort: 15672
+MQReplicaCount: 1

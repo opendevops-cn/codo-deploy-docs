@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "flowQueue.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "flowQueue.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "flowQueueReplicas is required" .Values.flowQueueReplicas }}
+  selector:
+    matchLabels:
+      {{- include "flowQueue.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "flowQueue.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "flowQueueImage is required" .Values.flowQueueImage }}
+        name: {{ template "flowQueue.uname" . }}-image
+        imagePullPolicy: Always
+        env:
+        - name: SERVICE_NAME
+          value: "flow-queue"
+        resources:
+          limits:
+            cpu: {{ required "flowQueueCPULimit is required" .Values.flowQueueCPULimit }}
+            memory: {{ required "flowQueueMemoryLimit is required" .Values.flowQueueMemoryLimit }}
+            ephemeral-storage: {{ required "flowQueueEphemeralStorageLimit is required" .Values.flowQueueEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "flowQueueCPURequire is required" .Values.flowQueueCPURequire }}
+            memory: {{ required "flowQueueMemoryRequire is required" .Values.flowQueueMemoryRequire }}
+            ephemeral-storage: {{ required "flowQueueEphemeralStorageRequire is required" .Values.flowQueueEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: flow-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: flow-conf
+          configMap:
+            name: {{ template "flowQueue.uname" . }}
+

@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "agentServer.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "agentServer.labels" . | nindent 4 }}
+data:
+  ca.crt: |
+    {{ required "The agentServerConfCACrt is required" .Values.agentServerConfCACrt | nindent 4 }}
+  ca.key: |
+    {{ required "The agentServerConfCAKey is required" .Values.agentServerConfCAKey | nindent 4 }}
+  conf.yaml: |+
+    PORT: 8080 # http control
+    WS-PORT: 8081 # websocket
+    RPC-PORT: 8082 # 没用
+    PROM-PORT: 8083 # metrics
+    BIND-ADDRESS: 0.0.0.0
+    MQCONFIG:
+      ENABLED: true
+      SCHEMA: "amqp"
+      HOST: "{{ required "The rabbitmq.host is required" .Values.rabbitmq.host }}"
+      PORT: {{ required "The rabbitmq.port is required" .Values.rabbitmq.port }}
+      USERNAME: "{{ required "The rabbitmq.user is required" .Values.rabbitmq.user }}"
+      PASSWORD: "{{ required "The rabbitmq.passwd is required" .Values.rabbitmq.passwd }}"
+      VHOST: "{{ required "The rabbitmq.vhost is required" .Values.rabbitmq.vhost }}"
+    ROOT-PATH: .
+    MESH-CONFIG:
+      MESH-PORT: 8084
+      SSL-PUBLIC-KEY-FILEPATH: /data/ca.crt
+      SSL-PRIVATE-KEY-FILEPATH: /data/ca.key
+    LOG-LEVEL: "{{ required "The agentServerLogLevel is required" .Values.agentServerLogLevel }}"
+    DB-CONFIG:
+      DB-TYPE: mysql
+      DB-USER: {{ required "The mysql.user is required" .Values.mysql.user }}
+      DB-PASSWORD: {{ required "The mysql.passwd is required" .Values.mysql.passwd }}
+      DB-HOST: {{ required "The mysql.host is required" .Values.mysql.host }}
+      DB-NAME: {{ required "The agentServerDB is required" .Values.agentServerDB }}
+      DB-TABLE-PREFIX: codo_
+      DB-FILE: ""
+      DB-PORT: {{ required "The mysql.port is required" .Values.mysql.port }}
+    REDIS:
+      R-HOST: {{ required "The redis.host is required" .Values.redis.host }}
+      R-PORT: {{ required "The redis.port is required" .Values.redis.port }}
+      R-PASSWORD: "{{ required "The redis.passwd is required" .Values.redis.passwd }}"
+      R-DB: {{ required "The agentServerRedisDB is required" .Values.agentServerRedisDB }}
+    PUBLISH:
+      P-HOST: {{ required "The redis.host is required" .Values.redis.host }}
+      P-PORT: {{ required "The redis.port is required" .Values.redis.port }}
+      P-PASSWORD: "{{ required "The redis.passwd is required" .Values.redis.passwd }}"
+      P-DB: {{ required "The agentServerRedisPublishDB is required" .Values.agentServerRedisPublishDB }}
+      P-ENABLED: true

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "adminv4.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "adminv4.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "adminv4Replicas is required" .Values.adminv4Replicas }}
+  selector:
+    matchLabels:
+      {{- include "adminv4.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "adminv4.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "adminv4Image is required" .Values.adminv4Image }}
+        name: {{ template "adminv4.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "adminv4CPULimit is required" .Values.adminv4CPULimit }}
+            memory: {{ required "adminv4MemoryLimit is required" .Values.adminv4MemoryLimit }}
+            ephemeral-storage: {{ required "adminv4EphemeralStorageLimit is required" .Values.adminv4EphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "adminv4CPURequire is required" .Values.adminv4CPURequire }}
+            memory: {{ required "adminv4MemoryRequire is required" .Values.adminv4MemoryRequire }}
+            ephemeral-storage: {{ required "adminv4EphemeralStorageRequire is required" .Values.adminv4EphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: codo-adminv4-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: codo-adminv4-conf
+          configMap:
+            name: {{ template "adminv4.uname" . }}

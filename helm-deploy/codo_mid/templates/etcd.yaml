@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: etcd-config
+  labels:
+    app: etcd
+data:
+  etcd.yaml: |
+    name: {{ .Values.etcd.name }}
+    initial-cluster: {{ .Values.etcd.initialCluster }}
+    listen-client-urls: {{ .Values.etcd.listenClientURLs }}
+    listen-peer-urls: {{ .Values.etcd.listenPeerURLs }}
+    advertise-client-urls: {{ .Values.etcd.advertiseClientURLs }}
+    initial-advertise-peer-urls: {{ .Values.etcd.initialAdvertisePeerURLs }}
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: etcd
+  labels:
+    app: etcd
+spec:
+  serviceName: etcd
+  replicas: {{ .Values.EtcdReplicaCount }}
+  selector:
+    matchLabels:
+      app: etcd
+  volumeClaimTemplates:
+    - apiVersion:  v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: pvc-etcd-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ required "The etcdStorage is required" .Values.etcdStorage }}
+        volumeMode: Filesystem
+
+  template:
+    metadata:
+      labels:
+        app: etcd
+    spec:
+      initContainers:
+        - name: init-permissions
+          image: {{ .Values.EtcdImage.init_image }}
+          securityContext:
+            runAsUser: 0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              chmod 700 /bitnami/etcd/data
+              chown 1001:1001 /bitnami/etcd/data
+          volumeMounts:
+            - name: pvc-etcd-data
+              subPath: etcd/data
+              mountPath: /bitnami/etcd/data
+      containers:
+        - name: etcd
+          env:
+            - name: MY_STS_NAME
+              value: etcd
+            - name: ETCDCTL_API
+              value: "3"
+            - name: ETCD_ON_K8S
+              value: "yes"
+            - name: ETCD_START_FROM_SNAPSHOT
+              value: "no"
+            - name: ETCD_DISASTER_RECOVERY
+              value: "no"
+            - name: ETCD_NAME
+              value: $(MY_POD_NAME)
+            - name: ETCD_DATA_DIR
+              value: /bitnami/etcd/data
+            - name: ETCD_LOG_LEVEL
+              value: info
+            - name: ALLOW_NONE_AUTHENTICATION
+              value: "no"
+            - name: ETCD_LISTEN_PEER_URLS
+              value: http://0.0.0.0:2380
+            - name: ETCD_ROOT_PASSWORD
+              value: "{{ .Values.etcd.rootPassword }}"
+          image: "{{ .Values.EtcdImage.repository }}:{{ .Values.EtcdImage.tag }}"
+          ports:
+            - containerPort: 2379
+              name: client
+          volumeMounts:
+            - name: etcd-config
+              mountPath: /etc/etcd/etcd.conf
+              subPath: etcd.yaml
+            - name: pvc-etcd-data
+              subPath: etcd/data
+              mountPath: /bitnami/etcd/data
+      volumes:
+        - name: etcd-config
+          configMap:
+            name: etcd-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd
+  labels:
+    app: etcd
+spec:
+  ports:
+    - port: {{ .Values.EtcdService.port }}
+      targetPort: {{ .Values.EtcdService.port }}
+      protocol: TCP
+  selector:
+    app: etcd
+  type: {{ .Values.EtcdService.type }}

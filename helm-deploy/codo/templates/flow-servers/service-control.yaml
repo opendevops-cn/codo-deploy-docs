@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "flowControl.uname" . }}
+  namespace: {{ required "The namesapce is required" .Values.namespace }}
+  labels:
+    {{- include "flowControl.labels" . | nindent 4}}
+spec:
+  selector:
+    {{- include "flowControl.selectorLabels" . | nindent 4}}
+  ports:
+  - name: {{ template "flowControl.uname" . }}
+    protocol: TCP
+    port: {{ required "flowControlListenPort is required" .Values.flowControlListenPort }}
+    targetPort: http
+

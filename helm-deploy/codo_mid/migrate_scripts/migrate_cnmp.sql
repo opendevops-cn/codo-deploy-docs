@@ -1,0 +1,56 @@
+
+use codo_cnmp;
+
+CREATE TABLE IF NOT EXISTS `cluster` (
+                           `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                           `created_at` datetime(3) DEFAULT NULL,
+                           `updated_at` datetime(3) DEFAULT NULL,
+                           `deleted_at` datetime(3) DEFAULT NULL,
+                           `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+                           `description` text COLLATE utf8mb4_unicode_ci,
+                           `import_type` tinyint(4) DEFAULT NULL,
+                           `import_detail` longtext COLLATE utf8mb4_unicode_ci,
+                           `status` tinyint(4) DEFAULT NULL,
+                           `server_version` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                           `platform` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                           `build_date` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                           `ext_info` longtext COLLATE utf8mb4_unicode_ci,
+                           `node_state` tinyint(4) DEFAULT NULL,
+                           `health_state` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                           `cpu_usage` decimal(10,2) DEFAULT NULL,
+                           `memory_usage` decimal(10,2) DEFAULT NULL,
+                           `cpu_total` decimal(10,2) DEFAULT NULL,
+                           `memory_total` decimal(10,2) DEFAULT NULL,
+                           `node_count` tinyint(3) unsigned DEFAULT NULL,
+                           `cluster_state` tinyint(4) DEFAULT NULL,
+                           PRIMARY KEY (`id`),
+                           KEY `idx_codo_cluster_deleted_at` (`deleted_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `node` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                        `conditions` longtext COLLATE utf8mb4_unicode_ci,
+                        `capacity` longtext COLLATE utf8mb4_unicode_ci,
+                        `allocatable` longtext COLLATE utf8mb4_unicode_ci,
+                        `addresses` longtext COLLATE utf8mb4_unicode_ci,
+                        `creation_timestamp` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                        `created_at` datetime(3) DEFAULT NULL,
+                        `updated_at` datetime(3) DEFAULT NULL,
+                        `deleted_at` datetime(3) DEFAULT NULL,
+                        `cluster_id` bigint(20) unsigned DEFAULT NULL,
+                        `cpu_usage` decimal(10,2) DEFAULT NULL,
+                        `memory_usage` decimal(10,2) DEFAULT NULL,
+                        `status` tinyint(4) DEFAULT NULL,
+                        `labels` longtext COLLATE utf8mb4_unicode_ci,
+                        `annotations` longtext COLLATE utf8mb4_unicode_ci,
+                        `node_info` longtext COLLATE utf8mb4_unicode_ci,
+                        `roles` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                        `uid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                        `resource_version` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                        `health_state` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                        `spec` longtext COLLATE utf8mb4_unicode_ci,
+                        PRIMARY KEY (`id`),
+                        KEY `cluster_id` (`cluster_id`),
+                        CONSTRAINT `node_ibfk_1` FOREIGN KEY (`cluster_id`) REFERENCES `cluster` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

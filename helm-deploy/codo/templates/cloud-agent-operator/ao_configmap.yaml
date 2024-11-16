@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  name: cloud-agent-operator-config
+  labels:
+    {{ include "label.common" . | nindent 4 }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  config.yaml: |
+    # 服务配置
+    serverConfig:
+      # crd controller 配置
+      managerConfig:
+        # 最大同时处理的reconcile数量
+        maxConcurrentReconciles: 1024
+      pprof:
+        port: 9090
+      metrics:
+        port: 6060
+
+    # redis 配置(用于领域事件分发, 以及数据缓存)
+    redisConfig:
+      # 地址
+      addr: "{{ required "The redis.host is required" .Values.redis.host }}:{{ required "The redis.port is required" .Values.redis.port }}"
+      # 密码
+      password: "{{ required "The redis.passwd is required" .Values.redis.passwd }}"
+      # 数据库 index
+      db: {{ required "The aoRedisDB is required" .Values.aoRedisDB }}
+
+    # 可观测性配置
+    otel:
+      # 日志配置
+      log:
+        # 日志等级 DEBUG, INFO, WARN, ERROR, FATAL
+        level: "{{ required "The aoOtelLogLevel is required" .Values.aoOtelLogLevel }}"
+        # 日志格式 json, console
+        encoding: "console"
+        # 日志文件路径
+        filepath: "/data/codo-work-dir/codo-agent.log"
+        # 日志文件切割大小(单位: MB)(默认 100MB)
+        maxSize: 100
+        # 日志文件切割周期(单位: 天)(默认 7天)
+        maxAge: 7
+        # 日志文件最大保留个数(单位: 个)(默认 10个)
+        maxBackups: 10
+      # 链路追踪配置(可以不开, 不采集的话)
+      trace:
+        # jaeger 配置 的 endpoint
+        endpoint: "{{ .Values.aoOtelTraceEndpoint }}"
+        # endpoint 是否是 https
+        insecure: {{ required "The aoOtelTraceInsecure is required" .Values.aoOtelTraceInsecure }}
+      # 数据指标
+      metrics:
+        # 开启 exemplar
+        enableExemplar: true
+
+    # 镜像配置, 用于 cloud-agent 的运行时
+    imagesConfig:
+      # 运行时镜像(很重要)
+      entrypointImage: {{ required "The aoEntrypointImage is required" .Values.cloudAgentOperatorImage }}
+
+    # agent 配置
+    agentConfig:
+      # 日志等级
+      LOG-LEVEL: "{{ required "The aoOtelLogLevel is required" .Values.aoOtelLogLevel }}"
+      # RootPath 日志保存路径
+      # 用于：
+      # - 存储脚本文件
+      # - 存储密钥文件
+      # - 存储执行日志文件
+      # - 存储agent日志文件
+      ROOT-PATH: "/data/codo-agent"
+      # 连接服务地址
+      SERVER-ADDRESS: "{{ required "The aoAgentServerURL is required" .Values.aoAgentServerURL }}"
+      # 节点类型,当节点为master时，自动开启代理模式
+      NODE-TYPE: "operator"
+      # 业务ID
+      BIZ-ID: "{{ required "The aoBizID is required" .Values.aoBizID }}"
+      # 日志行数限制
+      ROW-LIMIT: {{ required "The aoRowLimit is required" .Values.aoRowLimit }}
+      # 最大执行命令数
+      MAX-EXEC-CMD: {{ required "The aoMaxCMD is required" .Values.aoMaxCMD }}
+      # 强指脚本的工作目录
+      WORK-DIR: "/data/codo-work-dir"
+      # 日志清理间隔(单位：天)
+      LOG-CLEAN-INTERVAL: 30
+    defaultTaskConfig:
+      # [可选] pod 的资源限制
+      # 用户可以选择在任务级指定资源需求，而不是在每个 Step 上指定资源需求。如果用户指定了任务级资源要求，
+      # 它将确保 kubelet 只为执行 Task 的 Steps 保留该数量的资源。如果用户指定了任务级资源限制，则任何 Step 都不能使用超过该数量的资源。
+      computeResources:
+        requests:
+          memory: "32Mi" # 申请 512 MB 的内存
+          cpu: "10m" # 申请 1 Core 的 CPU
+        limits:
+          memory: "64Mi" # 申请 512 MB 的内存
+          cpu: "30m" # 申请 1 Core 的 CPU

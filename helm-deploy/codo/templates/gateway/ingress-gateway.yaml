@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "gateway.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+  annotations:
+    {{- with .Values.gatewayIngressIPRestriction }}
+    nginx.org/server-snippets:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.gatewayIngressHost }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ template "gateway.uname" $ }}
+                port:
+                  number: {{ .Values.gatewayListenPort }}
+            path: /
+            pathType: ImplementationSpecific

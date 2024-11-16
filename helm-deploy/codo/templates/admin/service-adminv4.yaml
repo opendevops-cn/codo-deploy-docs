@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "adminv4.uname" . }}
+  namespace: {{ required "The namesapce is required" .Values.namespace }}
+  labels:
+    {{- include "adminv4.labels" . | nindent 4}}
+spec:
+  selector:
+    {{- include "adminv4.selectorLabels" . | nindent 4}}
+  ports:
+  - name: {{ template "adminv4.uname" . }}
+    protocol: TCP
+    port: {{ required "adminv4ListenPort is required" .Values.adminv4ListenPort }}
+    targetPort: http
+

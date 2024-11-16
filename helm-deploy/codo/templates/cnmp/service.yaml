@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cnmp.uname" . }}
+  namespace: {{ required "The namesapce is required" .Values.namespace }}
+  labels:
+    {{- include "cnmp.labels" . | nindent 4}}
+spec:
+  selector:
+    {{- include "cnmp.selectorLabels" . | nindent 4}}
+  ports:
+  - name: codo-cnmp
+    protocol: TCP
+    port: {{ required "cnmpListenPort is required" .Values.cnmpListenPort }}
+    targetPort: cnmp-svc
+  - name: cnmp-ws
+    protocol: TCP
+    port: {{ required "cnmpWSListenPort is required" .Values.cnmpWSListenPort }}
+    targetPort: ws-svc
+  - name: cnmp-pprof
+    protocol: TCP
+    port: {{ required "cnmpPprofListenPort is required" .Values.cnmpPprofListenPort }}
+    targetPort: pprof-svc
+  - name: cnmp-metric
+    protocol: TCP
+    port: {{ required "cnmpPromListenPort is required" .Values.cnmpPromListenPort }}
+    targetPort: metric-svc

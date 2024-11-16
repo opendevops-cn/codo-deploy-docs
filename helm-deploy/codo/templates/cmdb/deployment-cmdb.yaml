@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "cmdb.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "cmdb.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "cmdbReplicas is required" .Values.cmdbReplicas }}
+  selector:
+    matchLabels:
+      {{- include "cmdb.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cmdb.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "cmdbImage is required" .Values.cmdbImage }}
+        name: {{ template "cmdb.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "cmdbCPULimit is required" .Values.cmdbCPULimit }}
+            memory: {{ required "cmdbMemoryLimit is required" .Values.cmdbMemoryLimit }}
+            ephemeral-storage: {{ required "cmdbEphemeralStorageLimit is required" .Values.cmdbEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "cmdbCPURequire is required" .Values.cmdbCPURequire }}
+            memory: {{ required "cmdbMemoryRequire is required" .Values.cmdbMemoryRequire }}
+            ephemeral-storage: {{ required "cmdbEphemeralStorageRequire is required" .Values.cmdbEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: codo-cmdb-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: codo-cmdb-conf
+          configMap:
+            name: {{ template "cmdb.uname" . }}

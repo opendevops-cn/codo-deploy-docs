@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "kerrigan.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "kerrigan.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "kerriganReplicas is required" .Values.kerriganReplicas }}
+  selector:
+    matchLabels:
+      {{- include "kerrigan.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kerrigan.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "kerriganImage is required" .Values.kerriganImage }}
+        name: {{ template "kerrigan.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "kerriganCPULimit is required" .Values.kerriganCPULimit }}
+            memory: {{ required "kerriganMemoryLimit is required" .Values.kerriganMemoryLimit }}
+            ephemeral-storage: {{ required "kerriganEphemeralStorageLimit is required" .Values.kerriganEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "kerriganCPURequire is required" .Values.kerriganCPURequire }}
+            memory: {{ required "kerriganMemoryRequire is required" .Values.kerriganMemoryRequire }}
+            ephemeral-storage: {{ required "kerriganEphemeralStorageRequire is required" .Values.kerriganEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: codo-kerrigan-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: codo-kerrigan-conf
+          configMap:
+            name: {{ template "kerrigan.uname" . }}

@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-conf
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    port {{ required "redisPort is required" .Values.redisPort }}
+    requirepass {{ required "redisPassword is required" .Values.redisPassword }}
+    pidfile /var/run/redis_6379.pid
+    save 900 1
+    save 300 10
+    save 60 10000
+    rdbcompression yes
+    rdbchecksum yes
+    dbfilename dump.rdb
+    appendonly yes
+    appendfilename "appendonly.aof"
+    appendfsync everysec
+    dir /data
+    logfile "/data/redis-6379.log"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: {{ .Values.reidsReplicaCount }}
+  selector:
+    matchLabels:
+      app: codo-redis
+  template:
+    metadata:
+      labels:
+        app: codo-redis
+    spec:
+      containers:
+      - name: redis
+        image: "{{ .Values.redisImage.repository }}:{{ .Values.redisImage.tag }}"
+        command: ["redis-server", "/etc/redis/redis.conf"]
+        ports:
+        - containerPort: {{ required "redisPort is required" .Values.redisPort }}
+        volumeMounts:
+        - name: redis-config
+          mountPath: /etc/redis/redis.conf
+          subPath: redis.conf
+      volumes:
+      - name: redis-config
+        configMap:
+          name: redis-conf
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: codo-redis-svc
+  name: redis
+spec:
+  ports:
+  - name: tcp-redis
+    port: {{ required "redisPort is required" .Values.redisPort }}
+    protocol: TCP
+  selector:
+    app: codo-redis

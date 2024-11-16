@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "agentServer.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "agentServer.labels" . | nindent 4 }}
+  annotations:
+    nginx.org/websocket-services: "{{ template "agentServer.uname" . }}"
+    {{ required "The agentServerIngressWS is required" .Values.agentServerIngressWS | nindent 4 }}
+    {{- with .Values.agentServerIngressIPRestriction }}
+    nginx.org/server-snippets:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+
+spec:
+  rules:
+    - host: {{ .Values.agentServerIngressWsHost }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ template "agentServer.uname" $ }}
+                port:
+                  number: {{ .Values.agentServerWSListenPort }}
+            path: /
+            pathType: ImplementationSpecific

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "cmdb.uname" . }}
+  namespace: {{ required "The namesapce is required" .Values.namespace }}
+  labels:
+    {{- include "cmdb.labels" . | nindent 4}}
+spec:
+  selector:
+    {{- include "cmdb.selectorLabels" . | nindent 4}}
+  ports:
+  - name: {{ template "cmdb.uname" . }}
+    protocol: TCP
+    port: {{ required "cmdbListenPort is required" .Values.cmdbListenPort }}
+    targetPort: http
+

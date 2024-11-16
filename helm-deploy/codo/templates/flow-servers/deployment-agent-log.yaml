@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "flowAgentLog.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "flowAgentLog.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "flowAgentLogReplicas is required" .Values.flowAgentLogReplicas }}
+  selector:
+    matchLabels:
+      {{- include "flowAgentLog.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "flowAgentLog.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "flowAgentLogImage is required" .Values.flowAgentLogImage }}
+        name: {{ template "flowAgentLog.uname" . }}-image
+        imagePullPolicy: Always
+        env:
+        - name: SERVICE_NAME
+          value: "agent-log"
+        resources:
+          limits:
+            cpu: {{ required "flowAgentLogCPULimit is required" .Values.flowAgentLogCPULimit }}
+            memory: {{ required "flowAgentLogMemoryLimit is required" .Values.flowAgentLogMemoryLimit }}
+            ephemeral-storage: {{ required "flowAgentLogEphemeralStorageLimit is required" .Values.flowAgentLogEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "flowAgentLogCPURequire is required" .Values.flowAgentLogCPURequire }}
+            memory: {{ required "flowAgentLogMemoryRequire is required" .Values.flowAgentLogMemoryRequire }}
+            ephemeral-storage: {{ required "flowAgentLogEphemeralStorageRequire is required" .Values.flowAgentLogEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: flow-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: flow-conf
+          configMap:
+            name: {{ template "flowAgentLog.uname" . }}

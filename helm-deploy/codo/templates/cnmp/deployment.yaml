@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "cnmp.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "cnmp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "cnmpReplicas is required" .Values.cnmpReplicas }}
+  selector:
+    matchLabels:
+      {{- include "cnmp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cnmp.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "cnmpImage is required" .Values.cnmpImage }}
+        name: {{ template "cnmp.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "cnmpCPULimit is required" .Values.cnmpCPULimit }}
+            memory: {{ required "cnmpMemoryLimit is required" .Values.cnmpMemoryLimit }}
+            ephemeral-storage: {{ required "cnmpEphemeralStorageLimit is required" .Values.cnmpEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "cnmpCPURequire is required" .Values.cnmpCPURequire }}
+            memory: {{ required "cnmpMemoryRequire is required" .Values.cnmpMemoryRequire }}
+            ephemeral-storage: {{ required "cnmpEphemeralStorageRequire is required" .Values.cnmpEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: cnmp-svc
+        - containerPort: 8001
+          name: ws-svc
+        - containerPort: 8002
+          name: metric-svc
+        - containerPort: 8003
+          name: pprof-svc
+        volumeMounts:
+        - name: codo-cnmp-conf
+          mountPath: /data/etc/config.yaml
+          subPath: config.yaml
+      volumes:
+        - name: codo-cnmp-conf
+          configMap:
+            name: {{ template "cnmp.uname" . }}

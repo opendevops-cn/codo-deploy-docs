@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "frontend.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "frontend.labels" . | nindent 4 }}
+  annotations:
+    nginx.org/websocket-services: "{{ template "frontend.uname" . }}"
+    {{ required "The frontendIngressWS is required" .Values.frontendIngressWS | nindent 4 }}
+    {{- with .Values.frontendIngressIPRestriction }}
+    nginx.org/server-snippets:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.frontendIngressHost }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ template "frontend.uname" $ }}
+            port:
+              number: {{ .Values.frontendListenPort }}
+        path: /
+        pathType: ImplementationSpecific
+

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "gateway.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "gatewayReplicas is required" .Values.gatewayReplicas }}
+  selector:
+    matchLabels:
+      {{- include "gateway.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "gateway.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "gatewayImage is required" .Values.gatewayImage }}
+        name: {{ template "gateway.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "gatewayCPULimit is required" .Values.gatewayCPULimit }}
+            memory: {{ required "gatewayMemoryLimit is required" .Values.gatewayMemoryLimit }}
+            ephemeral-storage: {{ required "gatewayEphemeralStorageLimit is required" .Values.gatewayEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "gatewayCPURequire is required" .Values.gatewayCPURequire }}
+            memory: {{ required "gatewayMemoryRequire is required" .Values.gatewayMemoryRequire }}
+            ephemeral-storage: {{ required "gatewayEphemeralStorageRequire is required" .Values.gatewayEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8888
+          name: gateway-01
+        - containerPort: 11000
+          name: gateway-02
+        volumeMounts:
+        - name: codo-gateway-conf
+          mountPath: /usr/local/openresty/nginx/conf/app.json
+          subPath: app.json
+        - name: codo-gateway-conf
+          mountPath: /usr/local/openresty/nginx/conf/common/proxy.conf
+          subPath: proxy.conf
+        - name: codo-gateway-conf
+          mountPath: /usr/local/openresty/nginx/conf/nginx.conf
+          subPath: nginx.conf
+        - name: codo-gateway-conf
+          mountPath: /usr/local/openresty/nginx/conf/init_discovery.json
+          subPath: init_discovery.json
+        - name: codo-gateway-conf
+          mountPath: /usr/local/openresty/nginx/conf/init_routes.json
+          subPath: init_routes.json
+          
+      volumes:
+        - name: codo-gateway-conf
+          configMap:
+            name: {{ template "gateway.uname" . }}

@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "agentServer.uname" . }}
+  namespace: {{ required "The namesapce is required" .Values.namespace }}
+  labels:
+    {{- include "agentServer.labels" . | nindent 4}}
+spec:
+  selector:
+    {{- include "agentServer.selectorLabels" . | nindent 4}}
+  ports:
+  - name: mesh-port-svc
+    protocol: TCP
+    port: {{ required "agentServerMeshListenPort is required" .Values.agentServerMeshListenPort }}
+    targetPort: mesh-port
+  - name: control-port-svc
+    protocol: TCP
+    port: {{ required "agentServerListenPort is required" .Values.agentServerListenPort }}
+    targetPort: port
+  - name: rpc-port-svc
+    protocol: TCP
+    port: {{ required "agentServerRpcListenPort is required" .Values.agentServerRpcListenPort }}
+    targetPort: rpc-port
+  - name: prom-port-svc
+    protocol: TCP
+    port: {{ required "agentServerPromListenPort is required" .Values.agentServerPromListenPort }}
+    targetPort: prom-port
+  - name: ws-port-svc
+    protocol: TCP
+    port: {{ required "agentServerWSListenPort is required" .Values.agentServerWSListenPort }}
+    targetPort: ws-port
+

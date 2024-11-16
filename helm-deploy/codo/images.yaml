@@ -1,0 +1,15 @@
+frontendImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-frontend:latest
+gatewayImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-gateway:latest
+adminv4Image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-admin:latest
+cmdbImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cmdb:latest
+kerriganImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-kerrigan:latest
+flowAgentLogImage: registry.cn-shanghai.aliyuncs.com/ss1917/flow-agent-log:latest
+flowCronjobImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-cronjob:latest
+flowControlImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-api:latest
+flowExecTaskImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-exec-task:latest
+flowLoopImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-loop:latest
+flowQueueImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-queue:latest
+flowTaskLogImage: registry.cn-shanghai.aliyuncs.com/ss1917/flow-task-log:latest
+agentServerImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-agent-server:latest
+cnmpImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cnmp:latest
+cloudAgentOperatorImage: registry.cn-shanghai.aliyuncs.com/ss1917/cloud-agent-operator:v0.0.1

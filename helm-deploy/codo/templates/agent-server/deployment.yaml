@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "agentServer.uname" . }}
+  namespace: {{ required "The namespace is required" .Values.namespace }}
+  labels:
+    {{- include "agentServer.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "agentServerReplicas is required" .Values.agentServerReplicas }}
+  selector:
+    matchLabels:
+      {{- include "agentServer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "agentServer.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "agentServerImage is required" .Values.agentServerImage }}
+        name: {{ template "agentServer.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "agentServerCPULimit is required" .Values.agentServerCPULimit }}
+            memory: {{ required "agentServerMemoryLimit is required" .Values.agentServerMemoryLimit }}
+            ephemeral-storage: {{ required "agentServerEphemeralStorageLimit is required" .Values.agentServerEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "agentServerCPURequire is required" .Values.agentServerCPURequire }}
+            memory: {{ required "agentServerMemoryRequire is required" .Values.agentServerMemoryRequire }}
+            ephemeral-storage: {{ required "agentServerEphemeralStorageRequire is required" .Values.agentServerEphemeralStorageRequire }}
+        ports:
+        - containerPort: 8080
+          name: port
+        - containerPort: 8081
+          name: ws-port
+        - containerPort: 8082
+          name: rpc-port
+        - containerPort: 8083
+          name: prom-port   
+        - containerPort: 8084
+          name: mesh-port   
+        volumeMounts:
+          - name: codo-agent-server-conf
+            mountPath: /data/ca.key
+            subPath: ca.key
+          - name: codo-agent-server-conf
+            mountPath: /data/ca.crt
+            subPath: ca.crt
+          - name: codo-agent-server-conf
+            mountPath: /data/conf.yaml
+            subPath: conf.yaml
+      volumes:
+        - name: codo-agent-server-conf
+          configMap:
+            name: {{ template "agentServer.uname" . }}
