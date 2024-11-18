@@ -24,3 +24,5 @@ kubectl -n codo-test port-forward services/codo-biz-frontend 8888:80
 ## 进入控制台
 - 账号: admin
 - 密码: 1qazXSW@
+
+
