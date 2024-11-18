@@ -20,6 +20,9 @@ spec:
       - image: {{ required "cmdbImage is required" .Values.cmdbImage }}
         name: {{ template "cmdb.uname" . }}-image
         imagePullPolicy: Always
+        env:
+          - name: SERVICE_NAME
+            value: "cmdb"
         resources:
           limits:
             cpu: {{ required "cmdbCPULimit is required" .Values.cmdbCPULimit }}
