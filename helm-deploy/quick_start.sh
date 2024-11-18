@@ -62,8 +62,9 @@ echo "================ init environment done. ================"
 
 
 if [ -n "$local_deploy_crd" ]; then
-  echo "============== deploy crd =============="
-  kubectl apply -f ./crd/codo-cloud-task.yaml
+  echo "============== deploy crd & rbac =============="
+  kubectl apply -f ./crd/cloud-agent-operator/crd.yaml
+  kubectl apply -f ./crd/cloud-agent-operator/rbac.yaml
 fi
 
 # 中间件依赖
