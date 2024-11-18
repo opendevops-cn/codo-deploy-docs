@@ -1,10 +1,20 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: rabbitmq
   labels:
     app: rabbitmq
 spec:
+  serviceName: rabbitmq
+  volumeClaimTemplates:
+    - metadata:
+        name: rabbitmqdata
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
   replicas: {{ .Values.MQReplicaCount }}
   selector:
     matchLabels:
@@ -14,23 +24,36 @@ spec:
       labels:
         app: rabbitmq
     spec:
+      initContainers:
+        - name: set-permissions
+          image: busybox
+          command: [ 'sh', '-c', 'chmod -R 777 /bitnami/rabbitmq/mnesia' ]
+          volumeMounts:
+            - name: rabbitmqdata
+              subPath: rabbitmq/data
+              mountPath: /bitnami/rabbitmq/mnesia
+          securityContext:
+            runAsUser: 0
       containers:
-      - name: rabbitmq
-        image: "{{ .Values.MQImage.repository }}:{{ .Values.MQImage.tag }}"
-        ports:
-        - containerPort: {{ .Values.MQService.amqpPort }}
-        - containerPort: {{ .Values.MQService.managementPort }}
-        env:
-        - name: RABBITMQ_DEFAULT_USER
-          value: {{ .Values.rabbitmq.username | quote }}
-        - name: RABBITMQ_DEFAULT_PASS
-          value: {{ .Values.rabbitmq.password | quote }}
-        - name: RABBITMQ_ERLANG_COOKIE
-          value: {{ .Values.rabbitmq.erlangCookie | quote }}
-        - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
-          value: |2
-            -rabbit loopback_users []
-
+        - name: rabbitmq
+          image: "{{ .Values.MQImage.repository }}:{{ .Values.MQImage.tag }}"
+          ports:
+            - containerPort: {{ .Values.MQService.amqpPort }}
+            - containerPort: {{ .Values.MQService.managementPort }}
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: {{ .Values.rabbitmq.username | quote }}
+            - name: RABBITMQ_DEFAULT_PASS
+              value: {{ .Values.rabbitmq.password | quote }}
+            - name: RABBITMQ_ERLANG_COOKIE
+              value: {{ .Values.rabbitmq.erlangCookie | quote }}
+            - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
+              value: |2
+                -rabbit loopback_users []
+          volumeMounts:
+            - name: rabbitmqdata
+              subPath: rabbitmq/data
+              mountPath: /bitnami/rabbitmq/mnesia
 ---
 apiVersion: v1
 kind: Service
@@ -40,14 +63,14 @@ metadata:
     app: rabbitmq
 spec:
   ports:
-  - name: amqp
-    port: {{ .Values.MQService.amqpPort }}
-    targetPort: {{ .Values.MQService.amqpPort }}
-    protocol: TCP
-  - name: management
-    port: {{ .Values.MQService.managementPort }}
-    targetPort: {{ .Values.MQService.managementPort }}
-    protocol: TCP
+    - name: amqp
+      port: {{ .Values.MQService.amqpPort }}
+      targetPort: {{ .Values.MQService.amqpPort }}
+      protocol: TCP
+    - name: management
+      port: {{ .Values.MQService.managementPort }}
+      targetPort: {{ .Values.MQService.managementPort }}
+      protocol: TCP
   selector:
     app: rabbitmq
   type: {{ .Values.MQService.type }}

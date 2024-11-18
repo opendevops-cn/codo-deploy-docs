@@ -121,8 +121,8 @@ done
 echo "================ check rabbitmq status done ================"
 
 echo "================ start setup rabbitmq ================"
-kubectl exec -it -n $namespace $rabbitmq_pod_name -- /bin/bash -c "rabbitmqctl add_vhost codo"
-kubectl exec -it -n $namespace $rabbitmq_pod_name -- /bin/bash -c "rabbitmqctl set_permissions -p codo codo \".*\" \".*\" \".*\""
+kubectl exec -it -n $namespace $rabbitmq_pod_name -- /bin/bash -c "rabbitmqctl add_vhost codo" || true
+kubectl exec -it -n $namespace $rabbitmq_pod_name -- /bin/bash -c "rabbitmqctl set_permissions -p codo codo \".*\" \".*\" \".*\"" || true
 echo "================ setup rabbitmq done ================"
 
 echo "================ start setup mysql ================"
