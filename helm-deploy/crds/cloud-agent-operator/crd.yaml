@@ -45,10 +45,10 @@ spec:
                       description: |-
                         Claims lists the names of resources, defined in spec.resourceClaims,
                         that are used by this container.
-
+                        
                         This is an alpha field and requires enabling the
                         DynamicResourceAllocation feature gate.
-
+                        
                         This field is immutable. It can only be set for containers.
                       items:
                         description: ResourceClaim references one entry in PodSpec.ResourceClaims.
@@ -1240,11 +1240,11 @@ spec:
                             A special supplemental group that applies to all containers in a pod.
                             Some volume types allow the Kubelet to change the ownership of that volume
                             to be owned by the pod:
-
+                            
                             1. The owning GID will be the FSGroup
                             2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
                             3. The permission bits are OR'd with rw-rw----
-
+                            
                             If unset, the Kubelet will not modify the ownership and permissions of any volume.
                             Note that this field cannot be set when spec.os.name is windows.
                           format: int64
@@ -1330,7 +1330,7 @@ spec:
                               description: |-
                                 type indicates which kind of seccomp profile will be applied.
                                 Valid options are:
-
+                                
                                 Localhost - a profile defined in a file on the node should be used.
                                 RuntimeDefault - the container runtime default profile should be used.
                                 Unconfined - no profile should be applied.
@@ -1508,7 +1508,7 @@ spec:
                               MatchLabelKeys cannot be set when LabelSelector isn't set.
                               Keys that don't exist in the incoming pod labels will
                               be ignored. A null or empty list means only match against labelSelector.
-
+                              
                               This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
                             items:
                               type: string
@@ -1547,7 +1547,7 @@ spec:
                               If value is nil, the constraint behaves as if MinDomains is equal to 1.
                               Valid values are integers greater than 0.
                               When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-
+                              
                               For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
                               labelSelector spread as 2/2/2:
                               | zone1 | zone2 | zone3 |
@@ -1556,7 +1556,7 @@ spec:
                               In this situation, new pod with the same labelSelector cannot be scheduled,
                               because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
                               it will violate MaxSkew.
-
+                              
                               This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
                             format: int32
                             type: integer
@@ -1566,7 +1566,7 @@ spec:
                               when calculating pod topology spread skew. Options are:
                               - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
                               - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-
+                              
                               If this value is nil, the behavior is equivalent to the Honor policy.
                               This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
                             type: string
@@ -1577,7 +1577,7 @@ spec:
                               - Honor: nodes without taints, along with tainted nodes for which the incoming pod
                               has a toleration, are included.
                               - Ignore: node taints are ignored. All nodes are included.
-
+                              
                               If this value is nil, the behavior is equivalent to the Ignore policy.
                               This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
                             type: string
@@ -2033,7 +2033,7 @@ spec:
                               ephemeral represents a volume that is handled by a cluster storage driver.
                               The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
                               and deleted when the pod is removed.
-
+                              
                               Use this if:
                               a) the volume is only needed while the pod runs,
                               b) features of normal volumes like restoring from snapshot or capacity
@@ -2043,15 +2043,15 @@ spec:
                                  a PersistentVolumeClaim (see EphemeralVolumeSource for more
                                  information on the connection between this volume type
                                  and PersistentVolumeClaim).
-
+                              
                               Use PersistentVolumeClaim or one of the vendor-specific
                               APIs for volumes that persist for longer than the lifecycle
                               of an individual pod.
-
+                              
                               Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
                               be used that way - see the documentation of the driver for
                               more information.
-
+                              
                               A pod can use both types of ephemeral volumes and
                               persistent volumes at the same time.
                             properties:
@@ -2064,7 +2064,7 @@ spec:
                                   `<volume name>` is the name from the `PodSpec.Volumes` array
                                   entry. Pod validation will reject the pod if the concatenated name
                                   is not valid for a PVC (for example, too long).
-
+                                  
                                   An existing PVC with that name that is not owned by the pod
                                   will *not* be used for the pod to avoid using an unrelated
                                   volume by mistake. Starting the pod is then blocked until
@@ -2073,10 +2073,10 @@ spec:
                                   owner reference to the pod once the pod exists. Normally
                                   this should not be necessary, but it may be useful when
                                   manually reconstructing a broken cluster.
-
+                                  
                                   This field is read-only and no changes will be made by Kubernetes
                                   to the PVC after it has been created.
-
+                                  
                                   Required, must not be nil.
                                 properties:
                                   metadata:
@@ -2679,12 +2679,12 @@ spec:
                                       description: |-
                                         ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
                                         of ClusterTrustBundle objects in an auto-updating file.
-
+                                        
                                         Alpha, gated by the ClusterTrustBundleProjection feature gate.
-
+                                        
                                         ClusterTrustBundle objects can either be selected by name, or by the
                                         combination of signer name and a label selector.
-
+                                        
                                         Kubelet performs aggressive normalization of the PEM contents written
                                         into the pod filesystem.  Esoteric PEM features such as inter-block
                                         comments and block headers are stripped.  Certificates are deduplicated.
@@ -3361,10 +3361,10 @@ spec:
                                 description: |-
                                   Claims lists the names of resources, defined in spec.resourceClaims,
                                   that are used by this container.
-
+                                  
                                   This is an alpha field and requires enabling the
                                   DynamicResourceAllocation feature gate.
-
+                                  
                                   This field is immutable. It can only be set for containers.
                                 items:
                                   description: ResourceClaim references one entry in
@@ -3549,7 +3549,7 @@ spec:
                           script:
                             description: |-
                               Script is the contents of an executable file to execute.
-
+                              
                               If Script is not empty, the Step cannot have an Command and the Args will be passed to the Script.
                             type: string
                           securityContext:
@@ -3680,7 +3680,7 @@ spec:
                                     description: |-
                                       type indicates which kind of seccomp profile will be applied.
                                       Valid options are:
-
+                                      
                                       Localhost - a profile defined in a file on the node should be used.
                                       RuntimeDefault - the container runtime default profile should be used.
                                       Unconfined - no profile should be applied.
@@ -4195,7 +4195,7 @@ spec:
                               ephemeral represents a volume that is handled by a cluster storage driver.
                               The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
                               and deleted when the pod is removed.
-
+                              
                               Use this if:
                               a) the volume is only needed while the pod runs,
                               b) features of normal volumes like restoring from snapshot or capacity
@@ -4205,15 +4205,15 @@ spec:
                                  a PersistentVolumeClaim (see EphemeralVolumeSource for more
                                  information on the connection between this volume type
                                  and PersistentVolumeClaim).
-
+                              
                               Use PersistentVolumeClaim or one of the vendor-specific
                               APIs for volumes that persist for longer than the lifecycle
                               of an individual pod.
-
+                              
                               Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
                               be used that way - see the documentation of the driver for
                               more information.
-
+                              
                               A pod can use both types of ephemeral volumes and
                               persistent volumes at the same time.
                             properties:
@@ -4226,7 +4226,7 @@ spec:
                                   `<volume name>` is the name from the `PodSpec.Volumes` array
                                   entry. Pod validation will reject the pod if the concatenated name
                                   is not valid for a PVC (for example, too long).
-
+                                  
                                   An existing PVC with that name that is not owned by the pod
                                   will *not* be used for the pod to avoid using an unrelated
                                   volume by mistake. Starting the pod is then blocked until
@@ -4235,10 +4235,10 @@ spec:
                                   owner reference to the pod once the pod exists. Normally
                                   this should not be necessary, but it may be useful when
                                   manually reconstructing a broken cluster.
-
+                                  
                                   This field is read-only and no changes will be made by Kubernetes
                                   to the PVC after it has been created.
-
+                                  
                                   Required, must not be nil.
                                 properties:
                                   metadata:
@@ -4841,12 +4841,12 @@ spec:
                                       description: |-
                                         ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
                                         of ClusterTrustBundle objects in an auto-updating file.
-
+                                        
                                         Alpha, gated by the ClusterTrustBundleProjection feature gate.
-
+                                        
                                         ClusterTrustBundle objects can either be selected by name, or by the
                                         combination of signer name and a label selector.
-
+                                        
                                         Kubelet performs aggressive normalization of the PEM contents written
                                         into the pod filesystem.  Esoteric PEM features such as inter-block
                                         comments and block headers are stripped.  Certificates are deduplicated.
