@@ -12,7 +12,7 @@ data:
       NAME: "codo-cnmp" # 应用名称
       ENV: "PRD" # PRE/PRD/DEV 环境
       ADDR: "0.0.0.0:8000" # 监听地址
-      TIMEOUT: 30s  # 超时时间
+      TIMEOUT: 30  # 超时时间(秒)
       PROTOCOL: "HTTP" # HTTP/HTTPS
       VERSION: "v1.0.0" # 版本号
       SECRET: "{{ required "The cnmpSecret is required" .Values.cnmpSecret }}" # AES对称加密密钥
@@ -56,7 +56,7 @@ data:
       DB_PORT: "{{ required "The mysql.port is required" .Values.mysql.port }}"
       DB_MaxIdleConns: 10
       DB_MaxOpenConns: 10
-      DB_ConnMaxLifetime: 600s
+      DB_ConnMaxLifetime: 600 # (秒)
       DEBUG: true
 
     # Redis
@@ -69,4 +69,4 @@ data:
     TIANMEN:
       ADDR: "http://{{ template "gateway.innerApi" . }}"
       AUTH_KEY: "{{ required "The gatewayInnerApiToken is required" .Values.gatewayInnerApiToken }}"
-      TIMEOUT: 10s
+      TIMEOUT: 10 # (秒)
