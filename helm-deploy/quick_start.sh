@@ -167,7 +167,7 @@ kubectl exec -it -n $namespace $admin_pod_name -- /bin/bash -c "python3 manage.p
 gateway_inner_api_token=$(kubectl exec -it -n $namespace $admin_pod_name -- /bin/bash -c "python3 manage.py token_init" | tr -d '\r' | tr -d '\n')
 echo "gateway_inner_api_token==$gateway_inner_api_token"
 # helm 重新部署 biz 组件, 传入 api_token
-helm upgrade -n $namespace codo-biz ./codo --create-namespace --install --wait --cleanup-on-fail \
+helm upgrade --recreate-pods -n $namespace codo-biz ./codo --create-namespace --install --wait --cleanup-on-fail \
  --values $biz_values_file \
  --values $biz_images_file \
  --set "namespace=$namespace" \
