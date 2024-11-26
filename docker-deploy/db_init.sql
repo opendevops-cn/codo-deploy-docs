@@ -1,22 +1,22 @@
--- Create databases if they do not exist
+-- Create databases if they do not exist;
 CREATE DATABASE IF NOT EXISTS `codo-admin` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS `codo-cmdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS `codo-flow` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS `codo-kerrigan` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS `codo-agent-server` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- Create a user and grant privileges
+-- Create a user and grant privileges;
 CREATE USER IF NOT EXISTS 'codo'@'%' IDENTIFIED WITH mysql_native_password BY 'ss1917';
 GRANT ALL PRIVILEGES ON *.* TO 'codo'@'%' WITH GRANT OPTION;
 
--- Flush privileges
+-- Flush privileges;
 FLUSH PRIVILEGES;
 
 
--- 初始化数据字典
+-- 初始化数据字典;
 USE `codo-flow`;
 
--- 创建 sys_dict_type 表，如果它不存在
+-- 创建 sys_dict_type 表，如果它不存在;
 CREATE TABLE IF NOT EXISTS `sys_dict_type` (
   `id` int NOT NULL AUTO_INCREMENT,
   `is_lock` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `sys_dict_type` (
   KEY `ix_sys_dict_type_dict_type` (`dict_type`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
--- 创建 sys_dict_data 表，如果它不存在
+-- 创建 sys_dict_data 表，如果它不存在;
 CREATE TABLE IF NOT EXISTS `sys_dict_data` (
   `id` int NOT NULL AUTO_INCREMENT,
   `is_lock` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `sys_dict_data` (
   KEY `ix_sys_dict_data_dict_code` (`dict_code`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
--- 检查并插入 sys_dict_type
+-- 检查并插入 sys_dict_type;
 INSERT INTO `sys_dict_type` (`id`, `is_lock`, `status`, `remark`, `created_by`, `update_by`, `create_time`, `update_time`, `dict_code`, `dict_name`, `dict_type`)
 SELECT 1, 'n', '0', '流程类型', 'admin', '', '2023-03-15 16:48:10', '2023-03-15 16:48:10', 'FLOW_TYPE', '流程类型', 'list'
 WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_type` WHERE `dict_code` = 'FLOW_TYPE');
@@ -69,7 +69,7 @@ INSERT INTO `sys_dict_type` (`id`, `is_lock`, `status`, `remark`, `created_by`, 
 SELECT 2, 'n', '0', '常用任务使用', 'admin', '', '2023-03-16 09:56:28', '2023-03-16 09:56:28', 'TASK_TYPE', '任务类型', 'list'
 WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_type` WHERE `dict_code` = 'TASK_TYPE');
 
--- 检查并插入 sys_dict_data
+-- 检查并插入 sys_dict_data;
 INSERT INTO `sys_dict_data` (`id`, `is_lock`, `status`, `remark`, `created_by`, `update_by`, `create_time`, `update_time`, `dict_code`, `pid`, `dict_sort`, `dict_label`, `dict_value`, `data_type`, `css_class`, `list_class`)
 SELECT 1, 'n', '0', '事件', 'admin', '', '2023-03-15 16:48:38', '2023-03-15 16:48:38', 'FLOW_TYPE', 1, 0, '事件', 'event', 'string', '', ''
 WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_code` = 'FLOW_TYPE' AND `dict_value` = 'event');
@@ -103,16 +103,15 @@ SELECT 8, 'n', '0', '打包构建', 'admin', '', '2023-06-07 17:44:21', '2023-06
 WHERE NOT EXISTS (SELECT 1 FROM `sys_dict_data` WHERE `dict_code` = 'FLOW_TYPE' AND `dict_value` = 'build');
 
 
---------------------------------------- cnmp ---------------------------------------
+-- cnmp
+
 CREATE DATABASE IF NOT EXISTS `codo_cnmp` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 use codo_cnmp;
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- ----------------------------
--- Table structure for audit_log
--- ----------------------------
+-- Table structure for audit_log;
 CREATE TABLE IF NOT EXISTS `audit_log` (
                                            `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '操作用户名',
@@ -140,9 +139,7 @@ CREATE TABLE IF NOT EXISTS `audit_log` (
     INDEX `idx_request_path`(`request_path`) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '操作审计日志表' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for cluster
--- ----------------------------
+-- Table structure for cluster;
 CREATE TABLE IF NOT EXISTS `cluster` (
                                          `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_at` datetime(3) NULL DEFAULT NULL,
@@ -170,9 +167,7 @@ CREATE TABLE IF NOT EXISTS `cluster` (
     INDEX `idx_codo_cluster_deleted_at`(`deleted_at`) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for node
--- ----------------------------
+-- Table structure for node;
 CREATE TABLE IF NOT EXISTS `node` (
                                       `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -201,9 +196,7 @@ CREATE TABLE IF NOT EXISTS `node` (
     CONSTRAINT `node_ibfk_1` FOREIGN KEY (`cluster_id`) REFERENCES `cluster` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
     ) ENGINE = InnoDB AUTO_INCREMENT = 425 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for role
--- ----------------------------
+-- Table structure for role;
 CREATE TABLE IF NOT EXISTS `role` (
                                       `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_at` datetime(3) NULL DEFAULT NULL,
@@ -219,9 +212,8 @@ CREATE TABLE IF NOT EXISTS `role` (
     INDEX `idx_role_deleted_at`(`deleted_at`) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for role_binding
--- ----------------------------
+-- Table structure for role_binding;
+
 CREATE TABLE IF NOT EXISTS `role_binding` (
                                               `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_at` datetime(3) NULL DEFAULT NULL,
@@ -236,9 +228,7 @@ CREATE TABLE IF NOT EXISTS `role_binding` (
     INDEX `idx_role_binding_deleted_at`(`deleted_at`) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 76 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for user
--- ----------------------------
+-- Table structure for user;
 CREATE TABLE IF NOT EXISTS `user` (
                                       `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_at` datetime(3) NULL DEFAULT NULL,
@@ -254,9 +244,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     INDEX `idx_user_deleted_at`(`deleted_at`) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 11275928 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for user_follow
--- ----------------------------
+-- Table structure for user_follow;
 CREATE TABLE IF NOT EXISTS `user_follow` (
                                              `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `user_id` bigint(20) UNSIGNED NOT NULL COMMENT '用户ID',
@@ -270,9 +258,7 @@ CREATE TABLE IF NOT EXISTS `user_follow` (
     INDEX `idx_user_id`(`user_id`) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户关注表' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for user_group
--- ----------------------------
+-- Table structure for user_group;
 CREATE TABLE IF NOT EXISTS `user_group` (
                                             `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_at` datetime(3) NULL DEFAULT NULL,
@@ -285,9 +271,7 @@ CREATE TABLE IF NOT EXISTS `user_group` (
     INDEX `idx_user_group_deleted_at`(`deleted_at`) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for user_user_group_rel
--- ----------------------------
+-- Table structure for user_user_group_rel;
 CREATE TABLE IF NOT EXISTS `user_user_group_rel` (
                                                      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     `created_at` datetime(3) NULL DEFAULT NULL,
@@ -302,4 +286,4 @@ CREATE TABLE IF NOT EXISTS `user_user_group_rel` (
 
 SET FOREIGN_KEY_CHECKS = 1;
 
---------------------------------------- cnmp ---------------------------------------
+-- cnmp
