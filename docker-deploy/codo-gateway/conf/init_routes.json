@@ -1,0 +1,406 @@
+
+[
+  {
+    "url": "/api/acc/*",
+    "rule": {
+      "key": "/api/acc/*",
+      "plugins": [
+        "rewrite",
+        "discovery",
+        "sso2internal"
+      ],
+      "remark": "\u65E0\u9274\u6743\u8FDE\u63A5\uFF0C\u7528\u6765\u767B\u5F55",
+      "propsData": {
+        "rewrite_replace": "/v4/na",
+        "rewrite_url_regex": "^/api/acc"
+      },
+      "props": {
+        "rewrite_replace": "/v4/na",
+        "rewrite_url_regex": "^/api/acc"
+      },
+      "prefix": "/api/acc/*",
+      "service_name": "p",
+      "status": 1,
+      "protocol": "http"
+    }
+  },
+  {
+    "url": "/api/accounts/authorization/",
+    "rule": {
+      "protocol": "http",
+      "props": {
+        "limit_req_rate": 5,
+        "limit_req_burst": 5,
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/"
+      },
+      "service_name": "mg",
+      "plugins": [
+        "discovery",
+        "tracing",
+        "limit-req",
+        "rewrite",
+        "sso2internal"
+      ],
+      "propsData": {
+        "limit_req_rate": 5,
+        "limit_req_burst": 5,
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/"
+      },
+      "remark": "\u9274\u6743",
+      "key": "/api/accounts/authorization/",
+      "prefix": "/api/accounts/authorization/",
+      "status": 1
+    }
+  },
+  {
+    "url": "/api/accounts/login/",
+    "rule": {
+      "key": "/api/accounts/login/",
+      "plugins": [
+        "discovery",
+        "tracing",
+        "limit-req",
+        "rewrite"
+      ],
+      "remark": "\u767B\u5F55",
+      "protocol": "http",
+      "propsData": {
+        "limit_req_burst": 5,
+        "limit_req_rate": 5,
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/"
+      },
+      "prefix": "/api/accounts/login/",
+      "props": {
+        "limit_req_burst": 5,
+        "limit_req_rate": 5,
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/"
+      },
+      "status": 1,
+      "service_name": "mg"
+    }
+  },
+  {
+    "url": "/api/agent/*",
+    "rule": {
+      "plugins": [
+        "rewrite",
+        "discovery",
+        "mjwt",
+        "CRBAC"
+      ],
+      "status": 1,
+      "propsData": {
+        "rewrite_replace": "/api/",
+        "rewrite_url_regex": "^/api/agent/"
+      },
+      "props": {
+        "rewrite_replace": "/api/",
+        "rewrite_url_regex": "^/api/agent/"
+      },
+      "protocol": "http",
+      "prefix": "/api/agent/*",
+      "service_name": "agent",
+      "key": "/api/agent/*"
+    }
+  },
+  {
+    "url": "/api/cmdb/*",
+    "rule": {
+      "plugins": [
+        "rewrite",
+        "discovery",
+        "redis-logger",
+        "mjwt"
+      ],
+      "status": 1,
+      "propsData": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/cmdb/"
+      },
+      "remark": "cmdb",
+      "service_name": "cmdb",
+      "protocol": "http",
+      "prefix": "/api/cmdb/*",
+      "props": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/cmdb/"
+      },
+      "key": "/api/cmdb/*"
+    }
+  },
+  {
+    "url": "/api/cnmp-ws/*",
+    "rule": {
+      "prefix": "/api/cnmp-ws/*",
+      "protocol": "http",
+      "props": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/cnmp-ws/"
+      },
+      "key": "/api/cnmp-ws/*",
+      "service_name": "cnmp-ws",
+      "remark": "\u4E91\u7BA1\u5E73\u53F0 websocket",
+      "propsData": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/cnmp-ws/"
+      },
+      "status": 1,
+      "plugins": [
+        "rewrite",
+        "discovery"
+      ]
+    }
+  },
+  {
+    "url": "/api/cnmp/*",
+    "rule": {
+      "protocol": "http",
+      "key": "/api/cnmp/*",
+      "plugins": [
+        "rewrite",
+        "discovery",
+        "mjwt",
+        "redis-logger",
+        "CRBAC"
+      ],
+      "propsData": {
+        "rewrite_url_regex": "^/api/cnmp/",
+        "rewrite_replace": "/"
+      },
+      "remark": "\u4E91\u7BA1\u5E73\u53F0",
+      "props": {
+        "rewrite_url_regex": "^/api/cnmp/",
+        "rewrite_replace": "/"
+      },
+      "prefix": "/api/cnmp/*",
+      "service_name": "cnmp",
+      "status": 1
+    }
+  },
+  {
+    "url": "/api/cron/*",
+    "rule": {
+      "props": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/cron/"
+      },
+      "protocol": "http",
+      "prefix": "/api/cron/*",
+      "key": "/api/cron/*",
+      "service_name": "cron",
+      "propsData": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/cron/"
+      },
+      "status": 1,
+      "plugins": [
+        "rewrite",
+        "mjwt",
+        "discovery",
+        "redis-logger"
+      ]
+    }
+  },
+  {
+    "url": "/api/job/*",
+    "rule": {
+      "protocol": "http",
+      "status": 1,
+      "service_name": "job",
+      "plugins": [
+        "rewrite",
+        "discovery",
+        "CRBAC",
+        "redis-logger",
+        "sso2internal"
+      ],
+      "props": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/job/"
+      },
+      "prefix": "/api/job/*",
+      "propsData": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/job/"
+      },
+      "key": "/api/job/*"
+    }
+  },
+  {
+    "url": "/api/kerrigan/*",
+    "rule": {
+      "plugins": [
+        "rewrite",
+        "mjwt",
+        "discovery",
+        "redis-logger"
+      ],
+      "status": 1,
+      "protocol": "http",
+      "prefix": "/api/kerrigan/*",
+      "key": "/api/kerrigan/*",
+      "propsData": {
+        "rewrite_url_regex": "^/api/kerrigan/",
+        "rewrite_replace": "/"
+      },
+      "remark": "\u914D\u7F6E\u4E2D\u5FC3",
+      "service_name": "kerrigan",
+      "props": {
+        "rewrite_url_regex": "^/api/kerrigan/",
+        "rewrite_replace": "/"
+      }
+    }
+  },
+  {
+    "url": "/api/mg/*",
+    "rule": {
+      "service_name": "mg",
+      "prefix": "/api/mg/*",
+      "plugins": [
+        "discovery",
+        "rewrite",
+        "CRBAC",
+        "redis-logger",
+        "sso2internal"
+      ],
+      "props": {
+        "rewrite_url_regex": "^/api/mg/",
+        "rewrite_replace": "/"
+      },
+      "protocol": "http",
+      "remark": "",
+      "propsData": {
+        "rewrite_url_regex": "^/api/mg/",
+        "rewrite_replace": "/"
+      },
+      "status": 1,
+      "key": "/api/mg/*"
+    }
+  },
+  {
+    "url": "/api/noc/*",
+    "rule": {
+      "status": 1,
+      "service_name": "noc",
+      "key": "/api/noc/*",
+      "prefix": "/api/noc/*",
+      "plugins": [
+        "rewrite",
+        "mjwt",
+        "redis-logger",
+        "discovery",
+        "tracing",
+        "CRBAC"
+      ],
+      "remark": "\u901A\u77E5\u4E2D\u5FC3",
+      "propsData": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/noc/"
+      },
+      "props": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/api/noc/"
+      },
+      "protocol": "http"
+    }
+  },
+  {
+    "url": "/api/p/*",
+    "rule": {
+      "prefix": "/api/p/*",
+      "plugins": [
+        "rewrite",
+        "discovery",
+        "mjwt",
+        "redis-logger",
+        "sso2internal"
+      ],
+      "props": {
+        "rewrite_url_regex": "^/api/p/",
+        "rewrite_replace": "/"
+      },
+      "protocol": "http",
+      "remark": "\u7BA1\u7406\u540E\u53F0V4",
+      "service_name": "p",
+      "propsData": {
+        "rewrite_url_regex": "^/api/p/",
+        "rewrite_replace": "/"
+      },
+      "status": 1,
+      "key": "/api/p/*"
+    }
+  },
+  {
+    "url": "/api/v1/biz/*",
+    "rule": {
+      "remark": "\u4E1A\u52A1",
+      "status": 1,
+      "propsData": {
+        "rewrite_replace": "/v1/base/",
+        "rewrite_url_regex": "^/api/v1/"
+      },
+      "plugins": [
+        "rewrite",
+        "tracing",
+        "discovery",
+        "sso2internal"
+      ],
+      "props": {
+        "rewrite_replace": "/v1/base/",
+        "rewrite_url_regex": "^/api/v1/"
+      },
+      "protocol": "http",
+      "prefix": "/api/v1/biz/*",
+      "service_name": "mg",
+      "key": "/api/v1/biz/*"
+    }
+  },
+  {
+    "url": "/api/v2/cmdb/*",
+    "rule": {
+      "key": "/api/v2/cmdb/*",
+      "plugins": [
+        "discovery",
+        "rewrite",
+        "redis-logger",
+        "mjwt"
+      ],
+      "protocol": "http",
+      "remark": "\u6B63\u5F0F\u73AF\u5883CMDB-\u5F85\u5173\u95ED",
+      "propsData": {},
+      "service_name": "cmdb",
+      "status": 1,
+      "props": {},
+      "prefix": "/api/v2/cmdb/*"
+    }
+  },
+  {
+    "url": "/backend/cmdb/*",
+    "rule": {
+      "plugins": [
+        "rewrite",
+        "discovery",
+        "redis-logger",
+        "mjwt"
+      ],
+      "status": 1,
+      "propsData": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/backend/cmdb/"
+      },
+      "remark": "\u6B63\u5F0F\u73AF\u5883CMDB-\u5F85\u5173\u95ED",
+      "service_name": "cmdb",
+      "protocol": "http",
+      "prefix": "/backend/cmdb/*",
+      "props": {
+        "rewrite_replace": "/",
+        "rewrite_url_regex": "^/backend/cmdb/"
+      },
+      "key": "/backend/cmdb/*"
+    }
+  }
+]

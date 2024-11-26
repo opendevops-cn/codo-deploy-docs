@@ -1,0 +1,57 @@
+
+[
+  {
+    "service_name": "mg",
+    "upstream": "codo_mg:8000",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "agent",
+    "upstream": "codo-agent-server:8000",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "cmdb",
+    "upstream": "codo_cmdb:8000",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "cnmp-ws",
+    "upstream": "codo-cnmp:8002",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "cnmp",
+    "upstream": "codo-cnmp:8000",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "job",
+    "upstream": "codo_flow_control_api:8000",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "kerrigan",
+    "upstream": "codo-kerrigan:8000",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "p",
+    "upstream": "codo_mg:8000",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "cron",
+    "upstream": "codo_flow_control_api:8000",
+    "weight": 1,
+    "status": 1
+  }
+]

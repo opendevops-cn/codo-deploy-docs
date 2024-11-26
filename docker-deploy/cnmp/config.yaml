@@ -1,0 +1,64 @@
+
+# 应用
+APP:
+  NAME: "codo-cnmp" # 应用名称
+  ENV: "DEV" # PRE/PRD/DEV 环境
+  ADDR: "0.0.0.0:8000" # 监听地址
+  TIMEOUT: 30  # 超时时间(秒)
+  PROTOCOL: "HTTP" # HTTP/HTTPS
+  VERSION: "v1.0.0" # 版本号
+  SECRET: "replace me!!!" # AES对称加密密钥
+
+# Websocket
+WS:
+  ADDR: "0.0.0.0:8001"
+
+# 可观测
+OTEL:
+  TRACE:
+    ENDPOINT: ""  # 链路追踪地址
+    INSECURE: TRUE # 是否开启安全连接
+  METRIC:
+    ENABLE_EXEMPLAR: TRUE # 是否开启指标采样
+  LOG:
+    LEVEL: DEBUG
+
+# Prometheus
+PROMETHEUS:
+  ENABLED: true # 是否开启 Prometheus
+  NETWORK: "tcp" # 网络类型
+  ADDR: "0.0.0.0:8002" # 监听地址
+  PATH: "/metrics" # 路径
+
+# 火焰图
+PPROF:
+  ENABLE: true # 是否开启火焰图
+  NETWORK: "tcp" #  网络类型
+  ADDR: "0.0.0.0:8003" # 监听地址
+
+# 数据库
+DB:
+  DB_TYPE: "mysql" # 数据库类型
+  DB_USER: "codo"
+  DB_PASSWORD: "ss1917"
+  DB_HOST: "172.22.0.2"
+  DB_NAME: "codo_cnmp"
+  DB_TABLE_PREFIX: ""
+  DB_FILE: ""
+  DB_PORT: "3306"
+  DB_MaxIdleConns: 10
+  DB_MaxOpenConns: 10
+  DB_ConnMaxLifetime: 600 # (秒)
+  DEBUG: true
+
+# Redis
+REDIS:
+  R_HOST: "172.22.0.3"
+  R_PORT: 6379
+  R_PASSWORD: "ss1917"
+  R_DB: 1
+
+TIANMEN:
+  ADDR: ""
+  AUTH_KEY: ""
+  TIMEOUT: 10 # (秒)

@@ -21,75 +21,19 @@ cleanup() {
 # 注册EXIT信号处理器
 trap cleanup EXIT
 
-
-echo "================ init environment ================"
-# 如果 .env 文件存在, 则加载 .env 文件
-if [ -f .env ]; then
-  source .env
-fi
-
-if [ -n "$local_deploy_crd" ]; then
-  echo "============== need crd =============="
-  cp ./codo/.helmignore ./codo/.helmignore.bak
-  cp ./codo/.helmignore_without_crd ./codo/.helmignore
-
-  defer "mv ./codo/.helmignore.bak ./codo/.helmignore"
-fi
-
-biz_values_file=$local_biz_values_file
-if [ "$biz_values_file" == "" ]; then
-  biz_values_file="./codo/values.yaml"
-fi
-biz_images_file=$local_biz_images_file
-if [ "$biz_images_file" == "" ]; then
-  biz_images_file="./codo/images.yaml"
-fi
-mid_values_file=$local_mid_values_file
-if [ "$mid_values_file" == "" ]; then
-  mid_values_file="./codo_mid/values.yaml"
-fi
-namespace=$local_namespace
-if [ "$namespace" == "" ]; then
-  namespace="codo-dev"
-fi
-
-echo "namespace==${namespace}"
-echo "biz_values_file==${biz_values_file}"
-echo "biz_images_file==${biz_images_file}"
-echo "mid_values_file==${mid_values_file}"
-
 echo "================ init environment done. ================"
 
 
-if [ -n "$local_deploy_crd" ]; then
-  echo "============== deploy crd & rbac =============="
-  kubectl apply -f ./crd/cloud-agent-operator/crd.yaml
-  kubectl apply -f ./crd/cloud-agent-operator/rbac.yaml
-fi
-
 # 中间件依赖
-helm upgrade -n $namespace codo-mid ./codo_mid --install --create-namespace --wait --cleanup-on-fail \
---values $mid_values_file \
---set "namespace=$namespace"
-
-
+docker compose -f docker-compose-middle.yaml up -d
 echo "================ start check mysql status ================"
-mysql_pod_name=$(kubectl get pods -n $namespace|grep mysql | awk '{print $1}')
-echo "mysql_pod_name==${mysql_pod_name}"
-# 循环检查 pod 状态, 直到 RUNNING
-while true; do
-    pod_status=$(kubectl get pods -n $namespace | grep $mysql_pod_name | awk '{print $3}' || true)
-    echo "mysql pod status is $pod_status"
-    if [ "$pod_status" == "Running" ]; then
-        break
-    fi
-    sleep 1
-done
-echo "mysql pod is running"
+mysql_container_name=$(docker ps |grep mysql | awk '{print $1}')
+echo "mysql_container_name==${mysql_container_name}"
+
 # 检查 mysql 日志, 直到 mysql 初始化完成
 echo "================ check mysql log ================"
 while true; do
-    mysql_log=$(kubectl logs -n $namespace $mysql_pod_name |grep 'Server' |grep 'mysqld' | grep "starting as process 1" || true)
+    mysql_log=$(docker logs $mysql_container_name 2>&1 |grep 'Server' |grep 'mysqld' | grep "starting as process 1" || true)
     if [ "$mysql_log" != "" ]; then
         break
     fi
@@ -99,21 +43,11 @@ echo "================ check mysql status done ================"
 
 
 echo "================ start check rabbitmq status ================"
-rabbitmq_pod_name=$(kubectl get pods -n $namespace |grep rabbitmq | awk '{print $1}')
-echo "rabbitmq_pod_name==${rabbitmq_pod_name}"
-# 循环检查 pod 状态, 直到 RUNNING
-while true; do
-    pod_status=$(kubectl get pods -n $namespace | grep $rabbitmq_pod_name | awk '{print $3}' || true)
-    echo "rabbitmq pod status is $pod_status"
-    if [ "$pod_status" == "Running" ]; then
-        break
-    fi
-    sleep 1
-done
-echo "rabbitmq pod is running"
+rabbitmq_container_name=$(docker ps |grep rabbitmq | awk '{print $1}')
+echo "rabbitmq_container_name==${rabbitmq_container_name}"
 # 检查 rabbitmq 日志, 直到 rabbitmq 初始化完成
 while true; do
-    rabbitmq_log=$(kubectl logs -n $namespace $rabbitmq_pod_name | grep "Server startup complete" || true)
+    rabbitmq_log=$(docker logs $rabbitmq_container_name 2>&1 | grep "Server startup complete" || true)
     if [ "$rabbitmq_log" != "" ]; then
         break
     fi
@@ -122,16 +56,16 @@ done
 echo "================ check rabbitmq status done ================"
 
 echo "================ start setup rabbitmq ================"
-kubectl exec -it -n $namespace $rabbitmq_pod_name -- /bin/bash -c "rabbitmqctl add_vhost codo" || true
-kubectl exec -it -n $namespace $rabbitmq_pod_name -- /bin/bash -c "rabbitmqctl set_permissions -p codo codo \".*\" \".*\" \".*\"" || true
+docker exec -it $rabbitmq_container_name /bin/bash -c "rabbitmqctl add_vhost codo" || true
+docker exec -it $rabbitmq_container_name /bin/bash -c "rabbitmqctl set_permissions -p codo codo \".*\" \".*\" \".*\"" || true
 echo "================ setup rabbitmq done ================"
 
 echo "================ start setup mysql ================"
 # 将 codo_mid/migrate_scripts/*.sql 拷贝到 mysql 容器中
-kubectl cp ./codo_mid/migrate_scripts $namespace/$mysql_pod_name:/tmp/migrate_scripts
+kubectl cp ./codo_mid/migrate_scripts $namespace/$mysql_container_name:/tmp/migrate_scripts
 # 执行数据库初始化脚本
-kubectl exec -it -n $namespace $mysql_pod_name -- /bin/bash -c "mysql -uroot -proot_password < /tmp/migrate_scripts/migrate_db.sql" || true
-kubectl exec -it -n $namespace $mysql_pod_name -- /bin/bash -c "mysql -uroot -proot_password < /tmp/migrate_scripts/migrate_cnmp.sql" || true
+kubectl exec -it -n $namespace $mysql_container_name -- /bin/bash -c "mysql -uroot -proot_password < /tmp/migrate_scripts/migrate_db.sql" || true
+kubectl exec -it -n $namespace $mysql_container_name -- /bin/bash -c "mysql -uroot -proot_password < /tmp/migrate_scripts/migrate_cnmp.sql" || true
 echo "================ setup mysql done ================"
 
 echo "================ start deploy biz pods ================"
@@ -172,11 +106,5 @@ helm upgrade --recreate-pods -n $namespace codo-biz ./codo --create-namespace --
  --values $biz_images_file \
  --set "namespace=$namespace" \
  --set "gatewayInnerApiToken=$gateway_inner_api_token"
-
-
-if [ -n "$local_deploy_crd" ]; then
-  echo "============== recover  crd =============="
-  mv ./codo/.helmignore.bak ./codo/.helmignore
-fi
 
 echo "================ congratulation!!! deploy done ================"

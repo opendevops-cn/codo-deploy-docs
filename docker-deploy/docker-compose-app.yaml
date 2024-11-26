@@ -1,256 +1,267 @@
 version: "3"
 services:
-    tianmen:
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-gateway:latest
-        restart: always
-        container_name: gateway
-        hostname: gateway
-        networks:
-            codo:
-                ipv4_address: 172.22.0.6
-        environment:
-            # 环境变量注入配置例子
-            - CODO_GATEWAY.appName=codo-gateway
-            - CODO_GATEWAY.env=test
-            - CODO_GATEWAY.etcd.http_host=http://${DEFAULT_ETCD_HOST}:${DEFAULT_ETCD_PORT}
-            - CODO_GATEWAY.etcd.data_prefix=${DEFAULT_ETCD_PREFIX}
-            - CODO_GATEWAY.jwt_auth.key=auth_key
-            - CODO_GATEWAY.jwt_auth.token_secret=${DEFAULT_TOKEN_SECRET}
-            - CODO_GATEWAY.codo_rbac.key=auth_key
-            - CODO_GATEWAY.codo_rbac.token_secret=${DEFAULT_TOKEN_SECRET}
-            - CODO_GATEWAY.sso2internal.sso_token_secret=external_token_secret
-            - CODO_GATEWAY.sso2internal.sso_jwt_key=sso_token
-            - CODO_GATEWAY.sso2internal.internal_token_secret=${DEFAULT_TOKEN_SECRET}
-            - CODO_GATEWAY.sso2internal.internal_jwt_key=auth_key
-            - CODO_GATEWAY.mfa.mfa_secret=${DEFAULT_TOKEN_SECRET}
-            - CODO_GATEWAY.mfa.mfa_key=mfa_key
-            - CODO_GATEWAY.plugins_config.redis-logger.host=${DEFAULT_REDIS_HOST}
-            - CODO_GATEWAY.plugins_config.redis-logger.port=${DEFAULT_REDIS_PORT}
-            - CODO_GATEWAY.plugins_config.redis-logger.auth_pwd=${DEFAULT_REDIS_PASSWORD}
-            - CODO_GATEWAY.plugins_config.redis-logger.db=2
-            - CODO_GATEWAY.plugins_config.redis-logger.alive_time=604801
-            - CODO_GATEWAY.plugins_config.redis-logger.channel=gw
-            - CODO_GATEWAY.plugins_config.redis-logger.full_log=no
-            - CODO_GATEWAY.admin.jwt_secret=${DEFAULT_TOKEN_SECRET}
-            - CODO_GATEWAY.admin.accounts=admin
-            - CODO_GATEWAY.tokens=${CODO_GATEWAY_DEFAULT_API_TOKEN}
-            - CODO_GATEWAY.plugins=default_plugin,discovery_plugin,tracing_plugin,rewrite_plugin,jwt_plugin,codo_rbac_plugin,kafka-logger,redis-logger,limit-req,referer-restriction,ip-restriction,cors_plugin,sso2internal
-        ports:
-            - "8888:8888"
-            - "11000:11000"
+  tianmen:
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-gateway:latest
+    restart: always
+    container_name: gateway
+    hostname: gateway
+    networks:
+      codo:
+        ipv4_address: 172.22.0.6
+    volumes:
+      - ./codo-gateway/conf/init_discovery.json:/usr/local/openresty/nginx/conf/init_discovery.json
+      - ./codo-gateway/conf/init_routes.json:/usr/local/openresty/nginx/conf/init_routes.json
+    environment:
+      # 环境变量注入配置例子
+      - CODO_GATEWAY.appName=codo-gateway
+      - CODO_GATEWAY.env=test
+      - CODO_GATEWAY.etcd.http_host=http://${DEFAULT_ETCD_HOST}:${DEFAULT_ETCD_PORT}
+      - CODO_GATEWAY.etcd.data_prefix=${DEFAULT_ETCD_PREFIX}
+      - CODO_GATEWAY.jwt_auth.key=auth_key
+      - CODO_GATEWAY.jwt_auth.token_secret=${DEFAULT_TOKEN_SECRET}
+      - CODO_GATEWAY.codo_rbac.key=auth_key
+      - CODO_GATEWAY.codo_rbac.token_secret=${DEFAULT_TOKEN_SECRET}
+      - CODO_GATEWAY.sso2internal.sso_token_secret=external_token_secret
+      - CODO_GATEWAY.sso2internal.sso_jwt_key=sso_token
+      - CODO_GATEWAY.sso2internal.internal_token_secret=${DEFAULT_TOKEN_SECRET}
+      - CODO_GATEWAY.sso2internal.internal_jwt_key=auth_key
+      - CODO_GATEWAY.mfa.mfa_secret=${DEFAULT_TOKEN_SECRET}
+      - CODO_GATEWAY.mfa.mfa_key=mfa_key
+      - CODO_GATEWAY.plugins_config.redis-logger.host=${DEFAULT_REDIS_HOST}
+      - CODO_GATEWAY.plugins_config.redis-logger.port=${DEFAULT_REDIS_PORT}
+      - CODO_GATEWAY.plugins_config.redis-logger.auth_pwd=${DEFAULT_REDIS_PASSWORD}
+      - CODO_GATEWAY.plugins_config.redis-logger.db=2
+      - CODO_GATEWAY.plugins_config.redis-logger.alive_time=604801
+      - CODO_GATEWAY.plugins_config.redis-logger.channel=gw
+      - CODO_GATEWAY.plugins_config.redis-logger.full_log=no
+      - CODO_GATEWAY.admin.jwt_secret=${DEFAULT_TOKEN_SECRET}
+      - CODO_GATEWAY.admin.accounts=admin
+      - CODO_GATEWAY.tokens=${CODO_GATEWAY_DEFAULT_API_TOKEN}
+      - CODO_GATEWAY.plugins=default_plugin,discovery_plugin,tracing_plugin,rewrite_plugin,jwt_plugin,codo_rbac_plugin,kafka-logger,redis-logger,limit-req,referer-restriction,ip-restriction,cors_plugin,sso2internal
+    ports:
+      - "8888:8888"
+      - "11000:11000"
 
-    web:
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-frontend:latest
-        restart: always
-        container_name: web
-        hostname: web
-        ports:
-            - 80:80
-        networks:
-            codo:
-                ipv4_address: 172.22.0.10
-        depends_on:
-            - tianmen
+  web:
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-frontend:latest
+    restart: always
+    container_name: web
+    hostname: web
+    ports:
+      - 80:80
+    networks:
+      codo:
+        ipv4_address: 172.22.0.10
+    depends_on:
+      - tianmen
 
-    codo_mg:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-admin:latest
-        container_name: codo_mg
-        hostname: codo_mg
-        networks:
-            codo:
-                ipv4_address: 172.22.0.7
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
-        #      - ./codo-adminv4:/data:rw,x
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_ADMIN_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_ADMIN_DEFAULT_DB_DBNAME}
+  codo_mg:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-admin:latest
+    container_name: codo_mg
+    hostname: codo_mg
+    networks:
+      codo:
+        ipv4_address: 172.22.0.7
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    #      - ./codo-adminv4:/data:rw,x
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_ADMIN_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_ADMIN_DEFAULT_DB_DBNAME}
 
-    codo_cmdb:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cmdb:latest
-        container_name: codo_cmdb
-        hostname: codo_cmdb
-        networks:
-            codo:
-                ipv4_address: 172.22.0.8
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
-            - ./log/:/data/log/
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_CMDB_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_CMDB_DEFAULT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
-
-
-
-    codo_flow_control_api:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-api:latest
-        env_file:
-            - .env
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
-        networks:
-            codo:
-                ipv4_address: 172.22.0.11
-        container_name: codo_flow_control_api
-        ports:
-            - "9310:8000"
+  codo_cmdb:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cmdb:latest
+    container_name: codo_cmdb
+    hostname: codo_cmdb
+    networks:
+      codo:
+        ipv4_address: 172.22.0.8
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - ./log/:/data/log/
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_CMDB_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_CMDB_DEFAULT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
+      - SERVICE_NAME=cmdb
 
 
-    codo_flow_loop:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-loop:latest
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
-        networks:
-            codo:
-                ipv4_address: 172.22.0.14
-        container_name: codo_flow_loop
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
+
+  codo_flow_control_api:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-api:latest
+    env_file:
+      - .env
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
+      - SERVICE_NAME=control-api
+    networks:
+      codo:
+        ipv4_address: 172.22.0.11
+    container_name: codo_flow_control_api
+    ports:
+      - "9310:8000"
 
 
-    codo_flow_queue:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-queue:latest
-        container_name: codo_flow_queue
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
-        networks:
-            codo:
-                ipv4_address: 172.22.0.13
+  codo_flow_loop:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-loop:latest
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
+      - SERVICE_NAME=flow-loop
+    networks:
+      codo:
+        ipv4_address: 172.22.0.14
+    container_name: codo_flow_loop
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
 
-    codo_cron_job:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-cronjob:latest
-        container_name: codo_cron_job
-        networks:
-            codo:
-                ipv4_address: 172.22.0.12
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
-        ports:
-            - "9320:8000"
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
 
-    codo_exec_task:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-exec-task:latest
-        container_name: codo_exec_task
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
-        networks:
-            codo:
-                ipv4_address: 172.22.0.15
+  codo_flow_queue:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-queue:latest
+    container_name: codo_flow_queue
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
+      - SERVICE_NAME=flow-queue
+    networks:
+      codo:
+        ipv4_address: 172.22.0.13
 
-    codo_task_log:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-task-log:latest
-        container_name: codo_task_log
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
-        networks:
-            codo:
-                ipv4_address: 172.22.0.16
+  codo_cron_job:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-cronjob:latest
+    container_name: codo_cron_job
+    networks:
+      codo:
+        ipv4_address: 172.22.0.12
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    ports:
+      - "9320:8000"
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
+      - SERVICE_NAME=cron-task
 
-    codo_agent_log:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-agent-log:latest
-        container_name: codo_agent_log
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
-        networks:
-            codo:
-                ipv4_address: 172.22.0.17
+  codo_exec_task:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-exec-task:latest
+    container_name: codo_exec_task
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
+      - SERVICE_NAME=exec-task
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    networks:
+      codo:
+        ipv4_address: 172.22.0.15
 
-    codo-kerrigan:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-kerrigan:latest
-        container_name: codo_kerrigan
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_KERRIGAN_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_KERRIGAN_DEFAULT_DB_DBNAME}
-        networks:
-            codo:
-                ipv4_address: 172.22.0.18
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
+  codo_task_log:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/flow-task-log:latest
+    container_name: codo_task_log
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
+      - SERVICE_NAME=task-log
+    networks:
+      codo:
+        ipv4_address: 172.22.0.16
 
-    codo-agent-server:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-agent-server:latest
-        container_name: codo_agent_server
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_AGENT_DB_DBNAME}
-            - DEFAULT_REDIS_DB=${CODO_AGENT_REDIS_DB}
-        networks:
-            codo:
-                ipv4_address: 172.22.0.19
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
-        ports:
-            - "8080:8080"
-            - "8081:8081"
-            - "8083:8083"
+  codo_agent_log:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/flow-agent-log:latest
+    container_name: codo_agent_log
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
+      - SERVICE_NAME=agent-log
+    networks:
+      codo:
+        ipv4_address: 172.22.0.17
 
-    codo-cnmp:
-        restart: unless-stopped
-        image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cnmp:latest
-        container_name: codo_cnmp
-        env_file:
-            - .env
-        environment:
-            - DEFAULT_DB_DBNAME=${CODO_CNMP_DEFAULT_DB_DBNAME}
-            - READONLY_DB_DBNAME=${CODO_CNMP_DEFAULT_DB_DBNAME}
-        networks:
-            codo:
-                ipv4_address: 172.22.0.20
-        volumes:
-            - /sys/fs/cgroup:/sys/fs/cgroup
+  codo-kerrigan:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-kerrigan:latest
+    container_name: codo_kerrigan
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_KERRIGAN_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_KERRIGAN_DEFAULT_DB_DBNAME}
+    networks:
+      codo:
+        ipv4_address: 172.22.0.18
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+
+  codo-agent-server:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-agent-server:latest
+    container_name: codo_agent_server
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_AGENT_DB_DBNAME}
+      - DEFAULT_REDIS_DB=${CODO_AGENT_REDIS_DB}
+    networks:
+      codo:
+        ipv4_address: 172.22.0.19
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    ports:
+      - "8002:8002"
+      - "9998:9998"
+
+  codo-cnmp:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cnmp:latest
+    container_name: codo_cnmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - ./cnmp/config.yaml:/data/etc/config.yaml
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_CNMP_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_CNMP_DEFAULT_DB_DBNAME}
+    networks:
+      codo:
+        ipv4_address: 172.22.0.20
 
 networks:
-    codo:
-        external:
-            name: codo
+  codo:
+    external:
+      name: codo
