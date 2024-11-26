@@ -24,7 +24,7 @@ data:
       # 地址
       addr: "{{ required "The redis.host is required" .Values.redis.host }}:{{ required "The redis.port is required" .Values.redis.port }}"
       # 密码
-      password: "{{ required "The redis.passwd is required" .Values.redis.passwd }}"
+      password: "{{ .Values.redis.passwd }}"
       # 数据库 index
       db: {{ required "The aoRedisDB is required" .Values.aoRedisDB }}
 
@@ -59,6 +59,9 @@ data:
     imagesConfig:
       # 运行时镜像(很重要)
       entrypointImage: {{ required "The aoEntrypointImage is required" .Values.cloudAgentOperatorImage }}
+      # 拉取密钥 要是内容格式为 .dockerconfigjson 的 base64 编码
+      pullSecret: "{{ .Values.aoPullSecret }}"
+
 
     # agent 配置
     agentConfig:
@@ -97,4 +100,4 @@ data:
           cpu: "{{ required "The aoTaskDefaultLimitCPU is required" .Values.aoTaskDefaultLimitCPU }}" # 申请 1 Core 的 CPU
           memory: "{{ required "The aoTaskDefaultLimitMemory is required" .Values.aoTaskDefaultLimitMemory }}" # 申请 512 MB 的内存
       podTemplate:
-        {{ default "{}" .Values.aoPodTemplate }}
+        {{ default "{}" .Values.aoPodTemplate | nindent 8 }}

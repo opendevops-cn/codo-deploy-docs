@@ -1,5 +1,3 @@
-# 命名空间
-namespace: codo-dev
 # app 应用;
 app: codo
 # env 环境;
@@ -327,3 +325,13 @@ aoAgentServerURL: "ws://codo-biz-agent-server:8002/api/v1/codo/agent?clientId=cl
 aoBizID: "525"
 aoRowLimit: 2000
 aoMaxCMD: 100
+
+# pod 模板
+aoPodTemplate: |
+  {}
+
+aoTaskDefaultRequestCPU: 30m
+aoTaskDefaultRequestMemory: 32Mi
+
+aoTaskDefaultLimitCPU: 100m
+aoTaskDefaultLimitMemory: 128Mi

@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      tolerations:
+        - operator: "Exists"
+      containers:
+        - name: redis
+          image: ccr.ccs.tencentyun.com/library/redis:latest
+          ports:
+            - containerPort: 6379
+          resources:
+            limits:
+              cpu: "256m"
+              memory: "512Mi"
+            requests:
+              cpu: "10m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379

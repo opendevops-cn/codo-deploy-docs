@@ -2,7 +2,7 @@
 
 ## 一键安装CODO
 ```shell
-bash ./quick_start.sh
+bash ./quick_start/all_in_one.sh
 
 
 # [optional]

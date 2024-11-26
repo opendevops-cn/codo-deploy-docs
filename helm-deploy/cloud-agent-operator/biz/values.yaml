@@ -1,0 +1,53 @@
+# Default values for cloud-agent-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# --------------------------- 通用配置  ------------------------------------ #
+# app 应用;
+app: codo
+# env 环境;
+env: dev
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+# 可选, 拉取 operator 镜像的密钥 要是内容格式为 .dockerconfigjson 的 base64 编码
+imagePullSecret: ""
+
+# --------------------------- 中间件配置  ------------------------------------ #
+redis:
+  host: "redis-service"
+  port: 6379
+  passwd:
+
+# --------------------------- Cloud Agent Operator ------------------------------------ #
+
+cloudAgentOperatorImage: "cloud-agent-operator:latest"
+# 拉取密钥 要是内容格式为 .dockerconfigjson 的 base64 编码
+aoPullSecret: ""
+# redis db
+aoRedisDB: 1
+
+# ======= otel 配置 =======
+# 日志等级
+aoOtelLogLevel: "INFO"
+# 链路追踪配置
+aoOtelTraceEndpoint: ""
+aoOtelTraceInsecure: true
+
+# ======= agent 配置 =======
+# agent server 连接地址
+aoAgentServerURL: "ws://codo-biz-agent-server:8002/api/v1/codo/agent?clientId=cloud-agent-operator:6666"
+# 业务ID
+aoBizID: "525"
+# 行数限制
+aoRowLimit: 100000
+# 最大同时执行命令数限制
+aoMaxCMD: 100
+# pod 模板
+aoPodTemplate: |
+  {}
+
+# 任务资源配置
+aoTaskDefaultRequestCPU: 30m
+aoTaskDefaultRequestMemory: 32Mi
+aoTaskDefaultLimitCPU: 100m
+aoTaskDefaultLimitMemory: 128Mi

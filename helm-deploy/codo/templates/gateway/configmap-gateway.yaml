@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "gateway.uname" . }}
-  namespace: {{ required "The namespace is required" .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "gateway.labels" . | nindent 4 }}
 data:
@@ -75,61 +75,61 @@ data:
     [
       {
         "service_name": "mg",
-        "upstream": "{{ template "adminv4.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.adminv4ListenPort}}",
+        "upstream": "{{ template "adminv4.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.adminv4ListenPort}}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "agent",
-        "upstream": "{{ template "agentServer.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.agentServerListenPort }}",
+        "upstream": "{{ template "agentServer.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.agentServerListenPort }}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "cmdb",
-        "upstream": "{{ template "cmdb.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.cmdbListenPort }}",
+        "upstream": "{{ template "cmdb.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.cmdbListenPort }}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "cnmp-ws",
-        "upstream": "{{ template "cnmp.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.cnmpWSListenPort }}",
+        "upstream": "{{ template "cnmp.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.cnmpWSListenPort }}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "cnmp",
-        "upstream": "{{ template "cnmp.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.cnmpListenPort }}",
+        "upstream": "{{ template "cnmp.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.cnmpListenPort }}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "job",
-        "upstream": "{{ template "flowControl.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.flowControlListenPort }}",
+        "upstream": "{{ template "flowControl.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.flowControlListenPort }}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "kerrigan",
-        "upstream": "{{ template "kerrigan.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.kerriganListenPort }}",
+        "upstream": "{{ template "kerrigan.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.kerriganListenPort }}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "p",
-        "upstream": "{{ template "adminv4.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.adminv4ListenPort }}",
+        "upstream": "{{ template "adminv4.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.adminv4ListenPort }}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "cron",
-        "upstream": "{{ template "flowCronjob.uname" . }}.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:{{ .Values.flowControlListenPort}}",
+        "upstream": "{{ template "flowCronjob.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.flowControlListenPort}}",
         "weight": 1,
         "status": 1
       },
       {
         "service_name": "noc",
-        "upstream": "todo-noc-svc.{{- required "namespace of cluster" .Values.namespace -}}.svc.cluster.local:8080",
+        "upstream": "todo-noc-svc.{{- .Release.Namespace -}}.svc.cluster.local:8080",
         "weight": 1,
         "status": 1
       }

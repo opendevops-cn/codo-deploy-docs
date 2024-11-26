@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "agentServer.uname" . }}
-  namespace: {{ required "The namespace is required" .Values.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "agentServer.labels" . | nindent 4 }}
 spec:

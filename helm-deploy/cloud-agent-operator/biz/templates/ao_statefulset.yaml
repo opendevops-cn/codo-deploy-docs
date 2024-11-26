@@ -13,7 +13,7 @@ metadata:
   name: cloud-agent-operator-controller-manager
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       control-plane: controller-manager
@@ -25,13 +25,16 @@ spec:
       labels:
         control-plane: controller-manager
     spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      tolerations:
+        - operator: "Exists"
       containers:
         - args:
             - --health-probe-bind-address=:8081
             - --leader-elect
             - -conf=/etc/config/config.yaml
           command:
-            - /manager
+            - /app/manager
           image: {{ required "The cloudAgentOperatorImage is required" .Values.cloudAgentOperatorImage }}
           imagePullPolicy: Always
           livenessProbe:
@@ -56,8 +59,8 @@ spec:
             periodSeconds: 10
           resources:
             limits:
-              cpu: 1000m
-              memory: 1024Mi
+              cpu: 500m
+              memory: 512Mi
             requests:
               cpu: 10m
               memory: 64Mi
@@ -80,7 +83,7 @@ spec:
             - --upstream=http://127.0.0.1:8080/
             - --logtostderr=true
             - --v=0
-          image: m.daocloud.io/gcr.io/kubebuilder/kube-rbac-proxy:v0.15.0
+          image: harbor.123u.com/public/kube-rbac-proxy:v0.15.0
           name: kube-rbac-proxy
           ports:
             - containerPort: 8443
@@ -88,7 +91,7 @@ spec:
               protocol: TCP
           resources:
             limits:
-              cpu: 500m
+              cpu: 100m
               memory: 128Mi
             requests:
               cpu: 5m
@@ -119,5 +122,6 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 10Gi
+            storage: 20Gi
         volumeMode: Filesystem
+        storageClassName: "ebs-ssd"
