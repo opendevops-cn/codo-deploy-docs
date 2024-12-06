@@ -23,5 +23,6 @@ docker exec -it codo_mg python3 manage.py db_init
 
 echo "开始重启应用"
 docker compose -f docker-compose-middle.yaml restart
-docker compose -f docker-compose-app.yaml restart
+docker compose -f docker-compose-app.yaml down
+docker compose -f docker-compose-app.yaml up -d
 
