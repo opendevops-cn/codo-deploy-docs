@@ -255,8 +255,8 @@ services:
     env_file:
       - .env
     environment:
-      - DEFAULT_DB_DBNAME=${CODO_CNMP_DEFAULT_DB_DBNAME}
-      - READONLY_DB_DBNAME=${CODO_CNMP_DEFAULT_DB_DBNAME}
+      - DEFAULT_DB_DBNAME=${CODO_CNMP_DB_NAME}
+      - READONLY_DB_DBNAME=${CODO_CNMP_DB_NAME}
     networks:
       codo:
         ipv4_address: 172.22.0.20
