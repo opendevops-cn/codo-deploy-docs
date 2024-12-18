@@ -241,6 +241,9 @@ services:
         ipv4_address: 172.22.0.19
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
+      - ./codo-agent-server/conf.yaml:/data/conf.yaml
+      - ./codo-agent-server/ca.crt:/data/ca.crt
+      - ./codo-agent-server/ca.key:/data/ca.key
     ports:
       - "8002:8002"
       - "9998:9998"
