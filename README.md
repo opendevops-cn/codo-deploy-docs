@@ -5,7 +5,6 @@
 - 本项目采用微服务架构，完成全球一站式运维体系建设。
 
 - Demo 地址：https://demo.opendevops.cn/user/login  `用户：demo 密码：2ZbFYNv9WibWcR7GB6kcEY`
--
 
 ```text
 codo
