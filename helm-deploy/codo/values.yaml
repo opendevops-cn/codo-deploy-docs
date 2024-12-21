@@ -117,6 +117,30 @@ gatewayAdminAccounts:
 gatewaySSO2Internal:
   sso_token_secret: "replace-me!!!"
 
+# --------------------------- GatewayExternal ------------------------------------ #
+gatewayExternalServiceName: gateway-external
+gatewayExternalRedisDB: 1
+gatewayExternalImage: gateway
+# 这里的Token需要在admin服务执行[python manage.py  token_init]获取
+gatewayExternalInnerApiToken: "replace-me!!!"
+gatewayExternalReplicas: 1
+gatewayExternalListenPort: 8888
+gatewayExternalCPURequire: 250m
+gatewayExternalCPULimit: 500m
+gatewayExternalMemoryRequire: 64Mi
+gatewayExternalMemoryLimit: 256Mi
+gatewayExternalEphemeralStorageRequire: 5Gi
+gatewayExternalEphemeralStorageLimit: 5Gi
+gatewayExternalIngressHost: "tianmen-external-dev.codo.com"
+gatewayExternalIngressIPRestriction: |
+  # 放通外网
+  allow  all;
+gatewayExternalLogLevel: "info"
+gatewayExternalAdminAccounts:
+  - "admin"
+gatewayExternalSSO2Internal:
+  sso_token_secret: "replace-me!!!"
+
 # --------------------------- Admin ------------------------------------ #
 adminv4ServiceName: adminv4
 adminv4DB: codo_admin
@@ -149,10 +173,14 @@ cmdbMemoryLimit: 2Gi
 cmdbEphemeralStorageRequire: 5Gi
 cmdbEphemeralStorageLimit: 5Gi
 cmdbJmsApi:
-  url: ""
-  keyId: ""
-  secret: ""
-
+  url: "xxxxx"
+  keyId: "xxxxx"
+  secret: "xxxxx"
+cmdbSwitchCommunity: "xxx"
+cmdbSwitchModelOid: "xxx"
+cmdbSwitchNameOid: "xxx"
+cmdbSwitchSnOid: "xxx"
+cmdbSwordSecret: "eHh4eA=="
 # --------------------------- Kerrigan ------------------------------------ #
 kerriganServiceName: kerrigan
 kerriganDB: codo_kerrigan
@@ -307,15 +335,26 @@ cnmpEphemeralStorageRequire: 5Gi
 cnmpEphemeralStorageLimit: 5Gi
 cnmpListenPort: 8000
 cnmpWSListenPort: 8002
-cnmpPprofListenPort: 8004
 cnmpPromListenPort: 8003
+cnmpPprofListenPort: 8004
 # cnmp key：16位
 cnmpSecret: "asdfg12345qazxsw"
+# metrics 查询地址
+cnmpGrafanaAddr: "xxxxxxxxxxx"
+cnmpGrafanaUser: "xxxxxxxx"
+cnmpGrafanaPassword: "xxxxx"
+# kafka 配置
+cnmpKafkaAddr: "x"
+cnmpKafkaTopic: "codo_cnmp"
+cnmpKafkaDialTimeout: 3
+
 
 
 # --------------------------- Cloud Agent Operator ------------------------------------ #
 
 cloudAgentOperatorImage: "cloud-agent-operator:latest"
+# 拉取密钥 要是内容格式为 .dockerconfigjson 的 base64 编码
+aoPullSecret: ""
 aoRedisDB: 1
 aoOtelLogLevel: "INFO"
 aoOtelTraceEndpoint: ""
@@ -335,3 +374,29 @@ aoTaskDefaultRequestMemory: 32Mi
 
 aoTaskDefaultLimitCPU: 100m
 aoTaskDefaultLimitMemory: 128Mi
+
+
+# --------------------------- notice ------------------------------------ #
+noticeReplicas: 1
+noticeImage: codo-notice
+noticeCPURequire: 30m
+noticeCPULimit: 100m
+noticeMemoryRequire: 64Mi
+noticeMemoryLimit: 256Mi
+noticeEphemeralStorageRequire: 1Gi
+noticeEphemeralStorageLimit: 5Gi
+
+noticeServiceName: notice
+noticeListenPort: 8000
+noticeHookListenPort: 9001
+noticeGrpcListenPort: 8001
+noticePromListenPort: 8003
+noticePprofListenPort: 8004
+noticeLogLevel: debug
+noticeDBDebug: false
+noticeLarkCard:
+  verificationToken: "xxx"
+  encryptKey: "xxx"
+
+noticeFsAppID: "xxx"
+noticeFsAppSecret: "xxx"

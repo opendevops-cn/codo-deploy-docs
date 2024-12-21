@@ -19,6 +19,7 @@ sed -i "s/^CODO_AUTH_KEY=.*/CODO_AUTH_KEY=\"$TOKEN\"/" .env
 echo "Token成功更新到.env文件的CODO_AUTH_KEY变量中"
 
 echo "开始初始化数据库"
+cat ./db_init.sql| docker exec -i mysql mysql -ucodo -pss1917
 docker exec -it codo_mg python3 manage.py db_init
 
 echo "开始重启应用"

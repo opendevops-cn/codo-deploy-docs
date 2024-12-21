@@ -53,5 +53,11 @@
     "upstream": "codo_flow_control_api:8000",
     "weight": 1,
     "status": 1
+  },
+  {
+    "service_name": "noc",
+    "upstream": "codo_notice:8000",
+    "weight": 1,
+    "status": 1
   }
 ]

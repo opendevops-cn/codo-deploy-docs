@@ -32,6 +32,8 @@ if [ -n "$local_deploy_crd" ]; then
   echo "============== need crd =============="
   cp ./codo/.helmignore ./codo/.helmignore.bak
   cp ./codo/.helmignore_without_crd ./codo/.helmignore
+  kubectl apply -f ./crds/cloud-agent-operator/crd.yaml
+  kubectl apply -f ./crds/cloud-agent-operator/rbac.yaml
 
   defer "mv ./codo/.helmignore.bak ./codo/.helmignore"
 fi
@@ -59,13 +61,6 @@ echo "biz_images_file==${biz_images_file}"
 echo "mid_values_file==${mid_values_file}"
 
 echo "================ init environment done. ================"
-
-
-if [ -n "$local_deploy_crd" ]; then
-  echo "============== deploy crd & rbac =============="
-  kubectl apply -f ./crd/cloud-agent-operator/crd.yaml
-  kubectl apply -f ./crd/cloud-agent-operator/rbac.yaml
-fi
 
 # 中间件依赖
 helm upgrade -n $namespace codo-mid ./codo_mid --install --create-namespace --wait --cleanup-on-fail \
@@ -130,8 +125,9 @@ echo "================ start setup mysql ================"
 # 将 codo_mid/migrate_scripts/*.sql 拷贝到 mysql 容器中
 kubectl cp ./codo_mid/migrate_scripts $namespace/$mysql_pod_name:/tmp/migrate_scripts
 # 执行数据库初始化脚本
-kubectl exec -it -n $namespace $mysql_pod_name -- /bin/bash -c "mysql -uroot -proot_password < /tmp/migrate_scripts/migrate_db.sql" || true
-kubectl exec -it -n $namespace $mysql_pod_name -- /bin/bash -c "mysql -uroot -proot_password < /tmp/migrate_scripts/migrate_cnmp.sql" || true
+kubectl exec -it -n $namespace $mysql_pod_name -- /bin/bash -c "mysql --default-character-set=utf8mb4 -uroot -proot_password < /tmp/migrate_scripts/migrate_db.sql" || true
+kubectl exec -it -n $namespace $mysql_pod_name -- /bin/bash -c "mysql --default-character-set=utf8mb4 -uroot -proot_password < /tmp/migrate_scripts/migrate_cnmp.sql" || true
+kubectl exec -it -n $namespace $mysql_pod_name -- /bin/bash -c "mysql --default-character-set=utf8mb4 -uroot -proot_password < /tmp/migrate_scripts/migrate_notice.sql" || true
 echo "================ setup mysql done ================"
 
 echo "================ start deploy biz pods ================"

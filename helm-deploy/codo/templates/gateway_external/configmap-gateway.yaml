@@ -1,0 +1,229 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "gatewayExternal.uname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gatewayExternal.labels" . | nindent 4 }}
+data:
+  app.json: |2
+    {
+      "appName": "codo-gateway",
+      "env": "{{ required "The env is required" .Values.env }}",
+      "etcd": {
+        "http_host": "http://{{ .Values.etcd.host }}:{{ .Values.etcd.port }}",
+        "data_prefix": "/gateway-external{{ required "The etcd.prefix is required" .Values.etcd.prefix }}"
+      },
+      "jwt_auth": {
+        "key": "auth_key",
+        "token_secret": "{{ .Values.tokenSecretPy }}"
+      },
+      "codo_rbac": {
+        "key": "auth_key",
+        "token_secret": "{{ .Values.tokenSecretPy }}"
+      },
+      "sso2internal": {
+        "sso_token_secret": "{{ required "The gatewaySSO2Internal.sso_token_secret is required" .Values.gatewayExternalSSO2Internal.sso_token_secret }}",
+        "sso_jwt_key": "sso_token",
+        "internal_token_secret": "{{ .Values.tokenSecretPy }}",
+        "internal_jwt_key": "auth_key"
+      },
+      "mfa": {
+        "mfa_secret": "123456",
+        "mfa_key": "mfa_key"
+      },
+      "biz_check_plugin": {
+        "tenantid_header_key": "tenantid"
+      },
+      "plugins": [
+        "default_plugin",
+        "discovery_plugin",
+        "tracing_plugin",
+        "rewrite_plugin",
+        "jwt_plugin",
+        "codo_rbac_plugin",
+        "kafka-logger",
+        "redis-logger",
+        "limit-req",
+        "referer-restriction",
+        "ip-restriction",
+        "cors_plugin",
+        "biz_check_plugin",
+        "mfa",
+        "sso2internal"
+      ],
+      "plugins_config": {
+        "redis-logger": {
+          "host": "{{ required "The redis.host is required" .Values.redis.host }}",
+          "port": {{ required "The redis.port is required" .Values.redis.port }},
+          "auth_pwd": "{{ required "The redis.passwd is required" .Values.redis.passwd }}",
+          "db": {{ required "The gatewayRedisDB is required" .Values.gatewayExternalRedisDB }},
+          "alive_time": 604800,
+          "channel": "gw",
+          "full_log": "no"
+        }
+      },
+      "admin": {
+        "jwt_secret": "{{ .Values.tokenSecretPy }}",
+        "accounts": {{ .Values.gatewayExternalAdminAccounts | toJson }}
+      },
+      "tokens": [
+        "{{ required "The gatewayInnerApiToken is required" .Values.gatewayExternalInnerApiToken }}"
+      ],
+      "dns_resolver": [
+        "kube-dns.kube-system.svc.cluster.local"
+      ]
+    }
+  init_discovery.json: |2
+    [
+      {
+        "service_name": "noc-hook",
+        "upstream": "{{ template "notice.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.noticeHookListenPort }}",
+        "weight": 1,
+        "status": 1
+      }
+    ]
+  init_routes.json: |2
+    [
+      {
+        "url": "/api/noc/*",
+        "rule": {
+          "status": 1,
+          "service_name": "noc-hook",
+          "key": "/api/noc/*",
+          "prefix": "/api/noc/*",
+          "plugins": [
+            "rewrite",
+            "discovery"
+          ],
+          "remark": "\u901A\u77E5\u4E2D\u5FC3",
+          "propsData": {
+            "rewrite_replace": "/",
+            "rewrite_url_regex": "^/api/noc/"
+          },
+          "props": {
+            "rewrite_replace": "/",
+            "rewrite_url_regex": "^/api/noc/"
+          },
+          "protocol": "http"
+        }
+      }
+    ]
+
+  proxy.conf: |2
+    # proxy
+    resolver kube-dns.kube-system.svc.cluster.local;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    ### 跨域
+    #add_header Access-Control-Allow-Methods *;
+    #add_header Access-Control-Max-Age 3600;
+    #add_header Access-Control-Allow-Credentials true;
+    #add_header Access-Control-Allow-Origin * always;
+    #add_header Access-Control-Allow-Headers $http_access_control_request_headers;
+    #if ($request_method = OPTIONS){
+    #    return 204;}
+    ###
+    proxy_redirect             off;
+    proxy_set_header           Host $host;
+    proxy_set_header           X-Real-IP $remote_addr;
+    proxy_set_header           X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header 	       X-Forwarded-Proto $scheme;
+    proxy_set_header           Accept-Encoding 'gzip';
+    client_max_body_size       500m;
+    client_body_buffer_size    512k;
+    proxy_connect_timeout      500;
+    proxy_send_timeout         2000;
+    proxy_read_timeout         2000;
+    proxy_ignore_client_abort  on;
+
+    proxy_buffer_size          128k;
+    proxy_buffers              4 256k;
+    proxy_busy_buffers_size    256k;
+    proxy_temp_file_write_size 256k;
+
+
+  nginx.conf: |2
+    # nginx
+
+    pid logs/nginx.pid;
+    # 开发时可以设置成 debug
+    error_log   logs/error.log {{ .Values.gatewayExternalLogLevel }};
+
+    master_process on;
+
+    # 生产环境设置成 auto
+    worker_processes 2;
+
+    # 最大文件描述符数量
+    worker_rlimit_nofile 20240;
+    worker_rlimit_core  4G;
+    # 工作进程关闭超时时间
+    worker_shutdown_timeout 3;
+
+    events {
+        accept_mutex off;
+        worker_connections  20240;
+    }
+
+    http {
+        # 设置 real_ip 头部
+        real_ip_header X-Forwarded-For;
+        real_ip_recursive on;
+        # 设置媒体类型格式
+        include mime.types;
+        default_type  application/json;
+        # 设置日志格式
+        include common/logformat.conf;
+
+        server_tokens off;
+        more_set_headers 'Server: CODO-GateWay';
+
+        sendfile        on;
+        tcp_nopush      on;
+        # aio             on;
+
+        #keepalive_timeout  0;
+        client_max_body_size 0;
+        keepalive_timeout 60s;
+        client_header_timeout 60s;
+        client_body_timeout 60s;
+        send_timeout 10s;
+
+        # 避免正则回溯问题
+        lua_regex_match_limit 100000;
+        lua_regex_cache_max_entries 8192;
+
+        lua_http10_buffering off;
+
+        # 全局缓存定义
+        lua_shared_dict upstream_type_cache 1m;
+        lua_shared_dict timer_lock 1m;
+        lua_shared_dict lrucache_lock 10m;
+        lua_shared_dict user_info 500k;
+        lua_shared_dict my_limit_conn_store 100m;
+
+        #最大等待任务数
+        lua_max_pending_timers 1024;
+        #最大同时运行任务数
+        lua_max_running_timers 256;
+
+
+        #lua库依赖路径
+        lua_package_path "${prefix}deps/share/lua/5.1/?.lua;${prefix}deps/share/lua/5.1/?/init.lua;${prefix}gateway/?.lua;${prefix}gateway/?/init.lua;;";
+        lua_package_cpath "${prefix}deps/lib64/lua/5.1/?.so;${prefix}deps/lib/lua/5.1/?.so;;";
+
+        #初始化脚本
+        # init_by_lua_block {
+        #     local app = require("app")
+        #     app.http_init()
+
+        # }
+        resolver kube-dns.kube-system.svc.cluster.local;
+        init_by_lua_file gateway/init_by_lua.lua;
+        init_worker_by_lua_file  gateway/init_worker_by_lua.lua;
+
+        include common/gzip.conf;
+        include servers/*.conf;
+    }

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "gatewayExternal.uname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gatewayExternal.labels" . | nindent 4 }}
+  annotations:
+    {{- with .Values.gatewayExternalIngressIPRestriction }}
+    nginx.org/server-snippets:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.gatewayExternalIngressHost }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ template "gatewayExternal.uname" $ }}
+                port:
+                  number: {{ .Values.gatewayExternalListenPort }}
+            path: /
+            pathType: ImplementationSpecific

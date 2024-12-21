@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "notice.uname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "notice.labels" . | nindent 4}}
+spec:
+  selector:
+    {{- include "notice.selectorLabels" . | nindent 4}}
+  ports:
+  - name: codo-notice
+    protocol: TCP
+    port: {{ required "noticeListenPort is required" .Values.noticeListenPort }}
+    targetPort: notice-http-svc
+  - name: notice-grpc
+    protocol: TCP
+    port: {{ required "noticeWSListenPort is required" .Values.noticeGrpcListenPort }}
+    targetPort: notice-grpc-svc
+  - name: notice-pprof
+    protocol: TCP
+    port: {{ required "noticePprofListenPort is required" .Values.noticePprofListenPort }}
+    targetPort: pprof-svc
+  - name: notice-metric
+    protocol: TCP
+    port: {{ required "noticePromListenPort is required" .Values.noticePromListenPort }}
+    targetPort: metric-svc
+  - name: notice-hook
+    protocol: TCP
+    port: {{ required "noticePromListenPort is required" .Values.noticeHookListenPort }}
+    targetPort: hook-svc

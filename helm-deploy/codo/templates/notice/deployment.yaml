@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "notice.uname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "notice.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "noticeReplicas is required" .Values.noticeReplicas }}
+  selector:
+    matchLabels:
+      {{- include "notice.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "notice.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "noticeImage is required" .Values.noticeImage }}
+        name: {{ template "notice.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "noticeCPULimit is required" .Values.noticeCPULimit }}
+            memory: {{ required "noticeMemoryLimit is required" .Values.noticeMemoryLimit }}
+            ephemeral-storage: {{ required "noticeEphemeralStorageLimit is required" .Values.noticeEphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "noticeCPURequire is required" .Values.noticeCPURequire }}
+            memory: {{ required "noticeMemoryRequire is required" .Values.noticeMemoryRequire }}
+            ephemeral-storage: {{ required "noticeEphemeralStorageRequire is required" .Values.noticeEphemeralStorageRequire }}
+        ports:
+        - containerPort: {{ required "noticeListenPort is required" .Values.noticeListenPort }}
+          name: notice-http-svc
+        - containerPort: {{ required "noticeGrpcListenPort is required" .Values.noticeGrpcListenPort }}
+          name: notice-grpc-svc
+        - containerPort: {{ required "noticePromListenPort is required" .Values.noticePromListenPort }}
+          name: metric-svc
+        - containerPort: {{ required "noticePprofListenPort is required" .Values.noticePprofListenPort }}
+          name: pprof-svc
+        - containerPort: {{ required "noticeHookListenPort is required" .Values.noticeHookListenPort }}
+          name: hook-svc
+        volumeMounts:
+        - name: codo-notice-conf
+          mountPath: /data/conf/config.yaml
+          subPath: config.yaml
+      volumes:
+        - name: codo-notice-conf
+          configMap:
+            name: {{ template "notice.uname" . }}

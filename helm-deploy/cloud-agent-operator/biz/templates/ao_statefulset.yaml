@@ -83,7 +83,7 @@ spec:
             - --upstream=http://127.0.0.1:8080/
             - --logtostderr=true
             - --v=0
-          image: harbor.123u.com/public/kube-rbac-proxy:v0.15.0
+          image: m.daocloud.io/gcr.io/kubebuilder/kube-rbac-proxy:v0.15.0
           name: kube-rbac-proxy
           ports:
             - containerPort: 8443
@@ -122,6 +122,5 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 20Gi
+            storage: 10Gi
         volumeMode: Filesystem
-        storageClassName: "ebs-ssd"

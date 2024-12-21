@@ -264,6 +264,22 @@ services:
       codo:
         ipv4_address: 172.22.0.20
 
+  codo-notice:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-notice:latest
+    container_name: codo_notice
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - ./notice/config.yaml:/data/conf/config.yaml
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_CNMP_DB_NAME}
+      - READONLY_DB_DBNAME=${CODO_CNMP_DB_NAME}
+    networks:
+      codo:
+        ipv4_address: 172.22.0.21
+
 networks:
   codo:
     external:

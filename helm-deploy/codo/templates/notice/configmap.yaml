@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "notice.uname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "notice.labels" . | nindent 4 }}
+data:
+  config.yaml: |2
+    # 项目元信息
+    metadata:
+      name: "codo-notice"
+      env: {{ required "The env is required" .Values.env }}
+      gatewayPrefix: "http://{{ template "gateway.innerApi" . }}"
+      gatewayToken: "{{ required "The gatewayInnerApiToken is required" .Values.gatewayInnerApiToken }}"
+
+    # 中间件
+    middleware:
+      jwt:
+        authKeyName: "auth_key"
+
+    # 服务注册
+    etcdRegistry:
+      endpoints:
+        - "127.0.0.1:2379"
+
+    # 可观测性相关
+    otel:
+      trace:
+        endpoint: "http://jaeger-xingyun-collector.tracing.svc.cluster.local:14268/api/traces"
+        insecure: true
+      metric:
+        enableExemplar: true
+      log:
+        level: {{ required "The noticeLogLevel is required" .Values.noticeLogLevel }}
+
+    # 运输层相关
+    server:
+      # 控制+通知接口配置
+      http:
+        network: "tcp"
+        addr: "0.0.0.0:{{ required "The noticeListenPort is required" .Values.noticeListenPort }}"
+        timeout: 10s
+      # 第三方 webhook 接入
+      thirdPartHook:
+        network: "tcp"
+        addr: "0.0.0.0:{{ required "The thirdPartHookPort is required" .Values.noticeHookListenPort }}"
+        timeout: 5s
+      # metrics 配置
+      prometheus:
+        enable: true
+        network: "tcp"
+        addr: "0.0.0.0:{{ required "The metricsPort is required" .Values.noticePromListenPort }}"
+        path: "/metrics"
+      # golang pprof 配置
+      pprof:
+        enable: true
+        network: "tcp"
+        addr: "0.0.0.0:{{ required "The pprofPort is required" .Values.noticePprofListenPort }}"
+
+    # 通知渠道回调配置
+    hook:
+      larkCard:
+        verificationToken: "{{ required "The noticeLarkCard.verificationToken is required" .Values.noticeLarkCard.verificationToken }}"
+        encryptKey: "{{ required "The noticeLarkCard.encryptKey is required" .Values.noticeLarkCard.encryptKey }}"
+
+    # 通知渠道配置
+    notifyConfig:
+      # email 配置
+      email:
+        host: smtp.feishu.cn
+        port: 465
+        user: codo@huanle.com
+        password: xxx
+
+      # 阿里通知配置
+      aliyun:
+        dxAccessId: LT____
+        dxAccessSecret: obyElU_____
+        dxSignName: CODO通知
+        dxTemplate: SMS_20___
+        dhAccessId: LTAI4F____
+        dhAccessSecret: wFqdUb____
+        dhTtsCode: TTS_21006____
+        dhCalledShowNumber: "xxx"
+        enable: true
+
+      # 腾讯通知配置
+      txyun:
+        dxAccessId: xxx
+        dxAccessSecret: xxx
+        dxSignName: CODO通知
+        dxTemplate: xxx
+        dxAppId: xxx
+        dhAccessId: xxx
+        dhAccessSecret: xxx
+        dhTemplate: xxx
+        dhAppId: xxx
+        enable: true
+
+      # 飞书配置
+      fsapp:
+        appId: "{{ required "The noticeFsAppID is required" .Values.noticeFsAppID }}"
+        appSecret: "{{ required "The noticeFsAppSecret is required" .Values.noticeFsAppSecret }}"
+
+      # 钉钉通知配置
+      ddapp:
+        appId: xxx
+        appSecret: xxx-xx
+        agentId: "276892406"
+
+      # 微信通知配置
+      wxapp:
+        agentId: 112233
+        agentSecret: xxx
+        cropId: xxx
+
+    # 数据库和缓存相关
+    data:
+      database:
+        link: "{{ required "The mysql.user is required" .Values.mysql.user }}:{{ required "The mysql.passwd is required" .Values.mysql.passwd }}@tcp({{ required "The mysql.host is required" .Values.mysql.host }}:{{ required "The mysql.port is required" .Values.mysql.port }})/codo-notice?loc=Local&charset=utf8mb4&parseTime=True"
+        debug: {{ required "The noticeDBDebug is required" .Values.noticeDBDebug }}
+        prefix: codo_
+      redis:
+        addr: {{ required "The redis.host is required" .Values.redis.host }}:{{ required "The redis.port is required" .Values.redis.port }}
+        readTimeout: 0.2s
+        writeTimeout: 0.2s
+        db: 2
+        password: "{{ required "The redis.passwd is required" .Values.redis.passwd }}"
+

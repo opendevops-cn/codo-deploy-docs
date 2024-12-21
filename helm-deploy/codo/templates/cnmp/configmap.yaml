@@ -70,3 +70,13 @@ data:
       ADDR: "http://{{ template "gateway.innerApi" . }}"
       AUTH_KEY: "{{ required "The gatewayInnerApiToken is required" .Values.gatewayInnerApiToken }}"
       TIMEOUT: 10 # (秒)
+
+    GRAFANA:
+      ADDR: "{{ required "The cnmpGrafanaAddr is required" .Values.cnmpGrafanaAddr }}"
+      USER: "{{ required "The cnmpGrafanaUser is required" .Values.cnmpGrafanaUser }}"
+      PASSWORD: "{{ required "The cnmpGrafanaPassword is required" .Values.cnmpGrafanaPassword }}"
+
+    KAFKA:
+      ADDR: "{{ required "The cnmpKafkaAddr is required" .Values.cnmpKafkaAddr }}"
+      TOPIC: "{{ required "The cnmpKafkaTopic is required" .Values.cnmpKafkaTopic }}"
+      DialTimeout: "{{ required "The cnmpKafkaDialTimeout is required" .Values.cnmpKafkaDialTimeout }}"

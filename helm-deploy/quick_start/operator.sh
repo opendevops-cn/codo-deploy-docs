@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euox pipefail
+set -eox pipefail
 
 echo "================ init environment ================"
 # 如果 .env 文件存在, 则加载 .env 文件
@@ -10,7 +10,7 @@ fi
 
 operator_values_file=$local_operator_values_file
 if [ "$operator_values_file" == "" ]; then
-  operator_values_file="./cloud-agent-operator/values.yaml"
+  operator_values_file="./cloud-agent-operator/biz/values.yaml"
 fi
 namespace=$local_namespace
 if [ "$namespace" == "" ]; then
@@ -20,6 +20,8 @@ fi
 echo "namespace==${namespace}"
 echo "operator_values_file==${operator_values_file}"
 
+
+kubectl create ns $namespace || true
 # 安装 crd
 kubectl apply -f ./crds/cloud-agent-operator/crd.yaml
 kubectl apply -f ./crds/cloud-agent-operator/rbac.yaml

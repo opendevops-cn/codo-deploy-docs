@@ -59,6 +59,9 @@ data:
     imagesConfig:
       # 运行时镜像(很重要)
       entrypointImage: {{ required "The aoEntrypointImage is required" .Values.cloudAgentOperatorImage }}
+      # 拉取密钥 要是内容格式为 .dockerconfigjson 的 base64 编码
+      pullSecret: "{{ required "The aoPullSecret is required" .Values.aoPullSecret }}"
+
 
     # agent 配置
     agentConfig:

@@ -12,4 +12,5 @@ flowQueueImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-queue:latest
 flowTaskLogImage: registry.cn-shanghai.aliyuncs.com/ss1917/flow-task-log:latest
 agentServerImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-agent-server:latest
 cnmpImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cnmp:latest
-cloudAgentOperatorImage: registry.cn-shanghai.aliyuncs.com/ss1917/cloud-agent-operator:v0.0.1
+noticeImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-notice:latest
+cloudAgentOperatorImage: registry.cn-shanghai.aliyuncs.com/ss1917/cloud-agent-operator:latest

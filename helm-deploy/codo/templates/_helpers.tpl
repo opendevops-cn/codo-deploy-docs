@@ -52,6 +52,25 @@ app.kubernetes.io/instance: {{ required "gatewayServiceName is required" .Values
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "gatewayExternal.uname" -}}
+{{- printf "%s-%s" .Release.Name .Values.gatewayExternalServiceName | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+
+{{- define "gatewayExternal.innerApi" -}}
+{{- printf "%s-gatewayExternal" .Release.Name  | trunc 63 | trimSuffix "-" -}}:{{ required "gatewayExternalListenPort is required" .Values.gatewayExternalListenPort }}
+{{- end }}
+
+{{- define "gatewayExternal.selectorLabels" -}}
+{{ include "label.common" . }}
+app.kubernetes.io/service: {{ required "gatewayExternalServiceName is required" .Values.gatewayExternalServiceName }}
+app.kubernetes.io/instance: {{ required "gatewayExternalServiceName is required" .Values.gatewayExternalServiceName }}-{{ .Release.Name }}
+{{- end }}
+
+{{- define "gatewayExternal.labels" -}}
+{{ include "gatewayExternal.selectorLabels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
 
 
 {{- define "adminv4.uname" -}}
@@ -256,3 +275,19 @@ app.kubernetes.io/instance: {{ required "cnmpServiceName is required" .Values.cn
 {{ include "cnmp.selectorLabels" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
+
+{{- define "notice.uname" -}}
+{{- printf "%s-%s" .Release.Name .Values.noticeServiceName | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+
+{{- define "notice.selectorLabels" -}}
+{{ include "label.common" . }}
+app.kubernetes.io/service: {{ required "noticeServiceName is required" .Values.noticeServiceName }}
+app.kubernetes.io/instance: {{ required "noticeServiceName is required" .Values.noticeServiceName }}-{{ .Release.Name }}
+{{- end }}
+
+{{- define "notice.labels" -}}
+{{ include "notice.selectorLabels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+

@@ -22,6 +22,9 @@ data:
         "key": "auth_key",
         "token_secret": "{{ .Values.tokenSecretPy }}"
       },
+      "biz_check_plugin": {
+        "tenantid_header_key": "tenantid"
+      },
       "sso2internal": {
         "sso_token_secret": "{{ required "The gatewaySSO2Internal.sso_token_secret is required" .Values.gatewaySSO2Internal.sso_token_secret }}",
         "sso_jwt_key": "sso_token",
@@ -129,7 +132,7 @@ data:
       },
       {
         "service_name": "noc",
-        "upstream": "todo-noc-svc.{{- .Release.Namespace -}}.svc.cluster.local:8080",
+        "upstream": "{{ template "notice.uname" . }}.{{- .Release.Namespace -}}.svc.cluster.local:{{ .Values.noticeListenPort }}",
         "weight": 1,
         "status": 1
       }
@@ -541,7 +544,8 @@ data:
       }
     ]
 
-  proxy.conf: |
+  proxy.conf: |2
+    # proxy
     resolver kube-dns.kube-system.svc.cluster.local;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
@@ -572,7 +576,9 @@ data:
     proxy_buffers              4 256k;
     proxy_busy_buffers_size    256k;
     proxy_temp_file_write_size 256k;
-  nginx.conf: |
+
+
+  nginx.conf: |2
     # nginx
 
     pid logs/nginx.pid;
@@ -596,10 +602,13 @@ data:
     }
 
     http {
-
+        # 设置 real_ip 头部
+        real_ip_header X-Forwarded-For;
+        real_ip_recursive on;
+        # 设置媒体类型格式
         include mime.types;
         default_type  application/json;
-
+        # 设置日志格式
         include common/logformat.conf;
 
         server_tokens off;

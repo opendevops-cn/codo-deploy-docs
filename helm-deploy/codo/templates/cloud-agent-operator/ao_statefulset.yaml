@@ -25,13 +25,15 @@ spec:
       labels:
         control-plane: controller-manager
     spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+
       containers:
         - args:
             - --health-probe-bind-address=:8081
             - --leader-elect
             - -conf=/etc/config/config.yaml
           command:
-            - /manager
+            - /app/manager
           image: {{ required "The cloudAgentOperatorImage is required" .Values.cloudAgentOperatorImage }}
           imagePullPolicy: Always
           livenessProbe:

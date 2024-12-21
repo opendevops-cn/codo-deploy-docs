@@ -53,7 +53,7 @@ data:
             add_header Access-Control-Allow-Credentials true;
             add_header Access-Control-Allow-Origin $http_origin;
             
-            alias /data/h5/landing/;
+            alias /data/h5/landing-f/;
             index index.html index.htm;
             try_files $uri $uri/ /index/index.html;
         }

@@ -20,7 +20,7 @@ redis:
 
 # --------------------------- Cloud Agent Operator ------------------------------------ #
 
-cloudAgentOperatorImage: "cloud-agent-operator:latest"
+cloudAgentOperatorImage: "registry.cn-shanghai.aliyuncs.com/ss1917/cloud-agent-operator:latest"
 # 拉取密钥 要是内容格式为 .dockerconfigjson 的 base64 编码
 aoPullSecret: ""
 # redis db
@@ -35,9 +35,9 @@ aoOtelTraceInsecure: true
 
 # ======= agent 配置 =======
 # agent server 连接地址
-aoAgentServerURL: "ws://codo-biz-agent-server:8002/api/v1/codo/agent?clientId=cloud-agent-operator:6666"
+aoAgentServerURL: "wss://demo.opendevops.cn/api/agent-ws/v1/codo/agent?clientId=cloud-agent-test:6666"
 # 业务ID
-aoBizID: "525"
+aoBizID: "504"
 # 行数限制
 aoRowLimit: 100000
 # 最大同时执行命令数限制

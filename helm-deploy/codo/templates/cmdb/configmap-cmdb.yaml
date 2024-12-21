@@ -25,6 +25,7 @@ data:
     xsrf_cookies = False
     expire_seconds = 365 * 24 * 60 * 60
     cookie_secret = os.getenv('DEFAULT_COOKIE_SECRET', '{{ required "The cookieSecretPy is required" .Values.cookieSecretPy }}')
+    sword_secret = os.getenv('DEFAULT_SWORD_SECRET', '{{ required "The swordSecretPy is required" .Values.cmdbSwordSecret }}')
 
     DEFAULT_DB_DBHOST = os.getenv('DEFAULT_DB_DBHOST', '{{ required "The mysql.host is required" .Values.mysql.host }}')
     DEFAULT_DB_DBPORT = os.getenv('DEFAULT_DB_DBPORT', {{ required "The mysql.port is required" .Values.mysql.port }})
@@ -62,7 +63,13 @@ data:
     JMS_API_BASE_URL = os.getenv('JMS_API_BASE_URL', '{{ .Values.cmdbJmsApi.url }}')
     JMS_API_KEY_ID = os.getenv('JMS_API_KEY_ID', '{{ .Values.cmdbJmsApi.keyId }}')
     JMS_API_KEY_SECRET = os.getenv('JMS_API_KEY_SECRET', '{{ .Values.cmdbJmsApi.secret }}')
-    
+
+    # 内网交换机配置
+    SWITCH_COMMUNITY = os.getenv("SWITCH_COMMUNITY", '{{ .Values.cmdbSwitchCommunity }}')
+    SWITCH_MODEL_OID = os.getenv("SWITCH_MODEL_OID", '{{ .Values.cmdbSwitchModelOid }}')
+    SWITCH_NAME_OID = os.getenv("SWITCH_NAME_OID", '{{ .Values.cmdbSwitchNameOid }}')
+    SWITCH_SN_OID = os.getenv("SWITCH_SN_OID", '{{ .Values.cmdbSwitchSnOid }}')
+
     try:
       from local_settings import *
     except ImportError:
@@ -72,10 +79,15 @@ data:
       debug=debug,
       xsrf_cookies=xsrf_cookies,
       cookie_secret=cookie_secret,
+      sword_secret=sword_secret,
       expire_seconds=expire_seconds,
       api_gw=api_gw,
       asset_change_notify=asset_change_notify,
       settings_auth_key=settings_auth_key,
+      switch_community=SWITCH_COMMUNITY,
+      switch_model_oid=SWITCH_MODEL_OID,
+      switch_name_oid=SWITCH_NAME_OID,
+      switch_sn_oid=SWITCH_SN_OID,
       app_name='cmdb',
       databases={
         const.DEFAULT_DB_KEY: {
