@@ -2,7 +2,7 @@
 metadata:
   name: "codo-notice"
   env: PRE
-  gatewayPrefix: "http://codo-gateway:8888"
+  gatewayPrefix: "http://172.22.0.6:8888"
   gatewayToken: "xxx"
 
 # 中间件

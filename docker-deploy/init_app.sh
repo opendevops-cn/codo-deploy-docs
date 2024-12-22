@@ -15,6 +15,7 @@ TOKEN=$(docker exec codo_mg python3 manage.py token_init | tr -d '\r\n')
 
 # 更新或替换.env文件中的CODO_AUTH_KEY变量的值
 sed -i "s/^CODO_AUTH_KEY=.*/CODO_AUTH_KEY=\"$TOKEN\"/" .env
+sed -i "s/gatewayToken: \"xxx\"/gatewayToken: \"$TOKEN\"/" ./notice/config.yaml
 
 echo "Token成功更新到.env文件的CODO_AUTH_KEY变量中"
 
