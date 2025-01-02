@@ -180,7 +180,7 @@ cmdbSwitchCommunity: "xxx"
 cmdbSwitchModelOid: "xxx"
 cmdbSwitchNameOid: "xxx"
 cmdbSwitchSnOid: "xxx"
-cmdbSwordSecret: "eHh4eA=="
+cmdbSwordSecret: "iYX3VtB0gSRH32AIKbn1HKgcAxLBxdRqRz7FLU_3_tQ="
 # --------------------------- Kerrigan ------------------------------------ #
 kerriganServiceName: kerrigan
 kerriganDB: codo_kerrigan
