@@ -31,7 +31,7 @@ services:
       - CODO_GATEWAY.plugins_config.redis-logger.port=${DEFAULT_REDIS_PORT}
       - CODO_GATEWAY.plugins_config.redis-logger.auth_pwd=${DEFAULT_REDIS_PASSWORD}
       # 天门的 redis 需要和 admin 一致, 否则 admin 无法通过 redis 消息队列拉取到审计日志
-      - CODO_GATEWAY.plugins_config.redis-logger.db=7
+      - CODO_GATEWAY.plugins_config.redis-logger.db=${CODO_ADMIN_DEFAULT_REDIS_DB}
       - CODO_GATEWAY.plugins_config.redis-logger.alive_time=604801
       - CODO_GATEWAY.plugins_config.redis-logger.channel=gw
       - CODO_GATEWAY.plugins_config.redis-logger.full_log=no
