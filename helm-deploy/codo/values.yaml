@@ -93,7 +93,7 @@ frontendIngressWS: |
 
 # --------------------------- Gateway ------------------------------------ #
 gatewayServiceName: gateway
-gatewayRedisDB: 1
+gatewayRedisDB: 7 # 天门的 redis 需要和 admin 一致, 否则 admin 无法通过 redis 消息队列拉取到审计日志
 gatewayImage: gateway
 # 这里的Token需要在admin服务执行[python manage.py  token_init]获取
 gatewayInnerApiToken: "replace-me!!!"
