@@ -20,6 +20,9 @@ spec:
       - image: {{ required "noticeImage is required" .Values.noticeImage }}
         name: {{ template "notice.uname" . }}-image
         imagePullPolicy: Always
+        command:
+          - /app/codo-notice
+          - --conf=/data/conf/config.yaml
         resources:
           limits:
             cpu: {{ required "noticeCPULimit is required" .Values.noticeCPULimit }}
