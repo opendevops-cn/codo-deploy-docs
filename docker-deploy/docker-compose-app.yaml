@@ -271,7 +271,7 @@ services:
     container_name: codo_notice
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
-      - ./notice/config.yaml:/app/conf/config.yaml
+      - ./notice/config.yaml:/app/config.yaml
     env_file:
       - .env
     environment:
