@@ -1,6 +1,23 @@
 #!/bin/bash
 
 echo -e "开始启动应用镜像"
+
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-gateway:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-frontend:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-admin:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-cmdb:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-api:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-loop:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-queue:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-cronjob:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-exec-task:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/flow-task-log:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/flow-agent-log:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-kerrigan:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-agent-server:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-cnmp:latest
+docker pull registry.cn-shanghai.aliyuncs.com/ss1917/codo-notice:latest
+
 # 启动应用镜像并等待启动完成
 docker compose -f docker-compose-app.yaml up -d
 if [ $? -ne 0 ]; then
