@@ -48,8 +48,11 @@ services:
     restart: always
     container_name: web
     hostname: web
+    volumes:
+      - ./frontend/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - 80:80
+      - 443:443
     networks:
       codo:
         ipv4_address: 172.22.0.10
@@ -147,24 +150,22 @@ services:
       codo:
         ipv4_address: 172.22.0.13
 
-  codo_cron_job:
+  codo_scheduler:
     restart: unless-stopped
-    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-cronjob:latest
-    container_name: codo_cron_job
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-task-scheduler:latest
+    container_name: codo_task_scheduler
     networks:
       codo:
         ipv4_address: 172.22.0.12
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
-    ports:
-      - "9320:8000"
     env_file:
       - .env
     environment:
       - DEFAULT_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
       - READONLY_DB_DBNAME=${CODO_FLOW_DEFAULT_DB_DBNAME}
       - DEFAULT_REDIS_DB=${CODO_CMDB_DEFAULT_REDIS_DB}
-      - SERVICE_NAME=cron-task
+      - SERVICE_NAME=task-scheduler
 
   codo_exec_task:
     restart: unless-stopped
@@ -212,21 +213,6 @@ services:
     networks:
       codo:
         ipv4_address: 172.22.0.17
-
-  codo-kerrigan:
-    restart: unless-stopped
-    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-kerrigan:latest
-    container_name: codo_kerrigan
-    env_file:
-      - .env
-    environment:
-      - DEFAULT_DB_DBNAME=${CODO_KERRIGAN_DEFAULT_DB_DBNAME}
-      - READONLY_DB_DBNAME=${CODO_KERRIGAN_DEFAULT_DB_DBNAME}
-    networks:
-      codo:
-        ipv4_address: 172.22.0.18
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup
 
   codo-agent-server:
     restart: unless-stopped
@@ -280,6 +266,22 @@ services:
     networks:
       codo:
         ipv4_address: 172.22.0.21
+
+  codo-k2:
+    restart: unless-stopped
+    image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-k2:latest
+    container_name: codo_k2
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - ./notice/config.yaml:/app/config.yaml
+    env_file:
+      - .env
+    environment:
+      - DEFAULT_DB_DBNAME=${CODO_K2_DEFAULT_DB_DBNAME}
+      - READONLY_DB_DBNAME=${CODO_K2_DEFAULT_DB_DBNAME}
+    networks:
+      codo:
+        ipv4_address: 172.22.0.22
 
 networks:
   codo:

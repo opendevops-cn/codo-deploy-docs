@@ -25,3 +25,8 @@ spec:
     protocol: TCP
     port: {{ required "cnmpPromListenPort is required" .Values.cnmpPromListenPort }}
     targetPort: metric-svc
+  # k8s 代理配置
+  - name: kubelet-port-svc
+    protocol: TCP
+    port: {{ required "cnmpKubeletListenPort is required" .Values.cnmpKubeletListenPort }}
+    targetPort: kubelet-svc

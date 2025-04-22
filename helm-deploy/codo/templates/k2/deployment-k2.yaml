@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "k2.uname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "k2.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "k2Replicas is required" .Values.k2Replicas }}
+  selector:
+    matchLabels:
+      {{- include "k2.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "k2.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+      - image: {{ required "k2Image is required" .Values.k2Image }}
+        name: {{ template "k2.uname" . }}-image
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: {{ required "k2CPULimit is required" .Values.k2CPULimit }}
+            memory: {{ required "k2MemoryLimit is required" .Values.k2MemoryLimit }}
+            ephemeral-storage: {{ required "k2EphemeralStorageLimit is required" .Values.k2EphemeralStorageLimit }}
+          requests:
+            cpu: {{ required "k2CPURequire is required" .Values.k2CPURequire }}
+            memory: {{ required "k2MemoryRequire is required" .Values.k2MemoryRequire }}
+            ephemeral-storage: {{ required "k2EphemeralStorageRequire is required" .Values.k2EphemeralStorageRequire }}
+        ports:
+        - containerPort: 8000
+          name: http
+        volumeMounts:
+        - name: codo-k2-conf
+          mountPath: /data/settings.py
+          subPath: settings.py
+      volumes:
+        - name: codo-k2-conf
+          configMap:
+            name: {{ template "k2.uname" . }}

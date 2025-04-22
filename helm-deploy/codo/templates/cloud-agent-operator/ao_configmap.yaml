@@ -47,9 +47,9 @@ data:
       # 链路追踪配置(可以不开, 不采集的话)
       trace:
         # jaeger 配置 的 endpoint
-        endpoint: "{{ .Values.aoOtelTraceEndpoint }}"
+        endpoint: "{{ .Values.otel.trace.endpoint }}"
         # endpoint 是否是 https
-        insecure: {{ required "The aoOtelTraceInsecure is required" .Values.aoOtelTraceInsecure }}
+        insecure: {{ required "The otel.trace.insecure is required" .Values.otel.trace.insecure }}
       # 数据指标
       metrics:
         # 开启 exemplar

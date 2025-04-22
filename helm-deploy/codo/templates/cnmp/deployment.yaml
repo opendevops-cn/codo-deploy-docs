@@ -38,6 +38,8 @@ spec:
           name: metric-svc
         - containerPort: 8003
           name: pprof-svc
+        - containerPort: 8443
+          name: kubelet-svc
         volumeMounts:
         - name: codo-cnmp-conf
           mountPath: /data/etc/config.yaml

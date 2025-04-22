@@ -11,6 +11,9 @@ data:
   ca.key: |
     {{ required "The agentServerConfCAKey is required" .Values.agentServerConfCAKey | nindent 4 }}
   conf.yaml: |+
+    META:
+      ENV: {{ .Values.env | quote}} # dev | pre | prod
+
     PORT: 8080 # http control
     WS-PORT: 8081 # websocket
     RPC-PORT: 8082 # 没用
@@ -50,3 +53,17 @@ data:
       P-PASSWORD: "{{ required "The redis.passwd is required" .Values.redis.passwd }}"
       P-DB: {{ required "The agentServerRedisPublishDB is required" .Values.agentServerRedisPublishDB }}
       P-ENABLED: true
+
+    # 第三方接口配置
+    THIRD-PARTY-API-CONFIG:
+      AUTH-KEY: "{{ required "The gatewayInnerApiToken is required" .Values.gatewayInnerApiToken }}"
+      CMDB-API-CONFIG:
+        REGISTER-AGENT-API: "http://{{ template "gateway.innerApi" . }}/api/cmdb/api/v2/cmdb/agent/"
+
+    # OTEL 配置
+    OTEL:
+      # pyroscope 服务地址
+      PYROSCOPE:
+        SERVER-ADDRESS: {{ .Values.otel.pyroscope.serverAddress | quote }}
+        BASIC-AUTH-USER: {{ .Values.otel.pyroscope.username | quote }}
+        BASIC-AUTH-PASSWORD: {{ .Values.otel.pyroscope.password | quote }}

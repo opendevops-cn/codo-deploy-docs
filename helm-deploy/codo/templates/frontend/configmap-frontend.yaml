@@ -208,10 +208,67 @@ data:
             try_files $uri $uri/ /web/cnmp/index.html;
         }
 
+        location /web/monitor/ {
+            # 确保每次请求都带上时间戳，避免浏览器缓存
+            if ($request_filename ~* ^.*?\.(html|htm)$) {
+                add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
+                add_header Pragma no-cache;
+                expires -1;
+            }
+
+            proxy_http_version 1.1;
+            add_header Access-Control-Allow-Methods *;
+            add_header Access-Control-Max-Age 3600;
+            add_header Access-Control-Allow-Credentials true;
+            add_header Access-Control-Allow-Origin $http_origin;
+            
+            alias /data/h5/monitor-f/;
+            index index.html index.htm;
+            try_files $uri $uri/ /web/monitor/index.html;
+        }
+
+        location /web/f2/ {
+            # 确保每次请求都带上时间戳，避免浏览器缓存
+            if ($request_filename ~* ^.*?\.(html|htm)$) {
+                add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
+                add_header Pragma no-cache;
+                expires -1;
+            }
+            proxy_http_version 1.1;
+            add_header Access-Control-Allow-Methods *;
+            add_header Access-Control-Max-Age 3600;
+            add_header Access-Control-Allow-Credentials true;
+            add_header Access-Control-Allow-Origin $http_origin;
+
+            alias /data/h5/f2-f/;
+            index index.html index.htm;
+            try_files $uri $uri/ /web/f2/index.html;
+        }
+
+
+        location /web/k2/ {
+            # 确保每次请求都带上时间戳，避免浏览器缓存
+            if ($request_filename ~* ^.*?\.(html|htm)$) {
+                add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
+                add_header Pragma no-cache;
+                expires -1;
+            }
+            proxy_http_version 1.1;
+            add_header Access-Control-Allow-Methods *;
+            add_header Access-Control-Max-Age 3600;
+            add_header Access-Control-Allow-Credentials true;
+            add_header Access-Control-Allow-Origin $http_origin;
+
+            alias /data/h5/k2-f/;
+            index index.html index.htm;
+            try_files $uri $uri/ /web/k2/index.html;
+        }
+
+
         location /api/cnmp-ws/ {
             # WebSocket 支持
-            proxy_read_timeout 600s;                 
-            proxy_send_timeout 600s;        
+            proxy_read_timeout 7200s;                 
+            proxy_send_timeout 7200s;        
 
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;

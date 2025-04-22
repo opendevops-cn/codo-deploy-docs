@@ -33,6 +33,16 @@ noticeConf: |
   }
 
 
+# --------------------------- 可观测配置  ------------------------------------ #
+otel:
+  trace:
+    endpoint: "http://jaeger-collector.jaegertracing.svc.cluster.local:14268/api/traces"
+    insecure: true
+  # 非必填
+  pyroscope:
+    serverAddress: ""
+    username: ""
+    password: ""
 
 # 是否开启Debug模式
 diagnosticMode:
@@ -94,7 +104,6 @@ frontendIngressWS: |
 # --------------------------- Gateway ------------------------------------ #
 gatewayServiceName: gateway
 gatewayRedisDB: 7 # 天门的 redis 需要和 admin 一致, 否则 admin 无法通过 redis 消息队列拉取到审计日志
-gatewayImage: gateway
 # 这里的Token需要在admin服务执行[python manage.py  token_init]获取
 gatewayInnerApiToken: "replace-me!!!"
 gatewayReplicas: 1
@@ -181,18 +190,24 @@ cmdbSwitchModelOid: "xxx"
 cmdbSwitchNameOid: "xxx"
 cmdbSwitchSnOid: "xxx"
 cmdbSwordSecret: "iYX3VtB0gSRH32AIKbn1HKgcAxLBxdRqRz7FLU_3_tQ="
-# --------------------------- Kerrigan ------------------------------------ #
-kerriganServiceName: kerrigan
-kerriganDB: codo_kerrigan
-kerriganImage: kerrigan
-kerriganReplicas: 1
-kerriganListenPort: 8000
-kerriganCPURequire: 250m
-kerriganCPULimit: 500m
-kerriganMemoryRequire: 512Mi
-kerriganMemoryLimit: 1Gi
-kerriganEphemeralStorageRequire: 5Gi
-kerriganEphemeralStorageLimit: 5Gi
+cmdbKafkaBootstrapServers: ""
+cmdbKafkaTopic: ""
+cmdbClientId: ""
+cmdbIgnoreTreeAlertItems: []
+
+# --------------------------- K2 ------------------------------------ #
+k2ServiceName: k2
+k2DB: codo_k2
+k2Image: k2
+k2Replicas: 1
+k2ListenPort: 8000
+k2CPURequire: 500m
+k2CPULimit: 1
+k2MemoryRequire: 512Mi
+k2MemoryLimit: 2Gi
+k2EphemeralStorageRequire: 5Gi
+k2EphemeralStorageLimit: 5Gi
+
 
 # --------------------------- Flow Agent Log ------------------------------------ #
 flowAgentLogServiceName: flow-agent-log
@@ -219,6 +234,19 @@ flowCronjobMemoryRequire: 2Gi
 flowCronjobMemoryLimit: 4Gi
 flowCronjobEphemeralStorageRequire: 5Gi
 flowCronjobEphemeralStorageLimit: 5Gi
+
+# --------------------------- Flow TaskScheduler ------------------------------------ #
+flowTaskSchedulerServiceName: flow-task-scheduler
+flowTaskSchedulerDB: codo_flow
+flowTaskSchedulerRedisDB: 9
+flowTaskSchedulerImage: flow-task-scheduler
+flowTaskSchedulerReplicas: 1
+flowTaskSchedulerCPURequire: 1
+flowTaskSchedulerCPULimit: 2
+flowTaskSchedulerMemoryRequire: 1Gi
+flowTaskSchedulerMemoryLimit: 2Gi
+flowTaskSchedulerEphemeralStorageRequire: 5Gi
+flowTaskSchedulerEphemeralStorageLimit: 5Gi
 
 # --------------------------- Flow Control ------------------------------------ #
 flowControlServiceName: flow-control
@@ -337,6 +365,8 @@ cnmpListenPort: 8000
 cnmpWSListenPort: 8002
 cnmpPromListenPort: 8003
 cnmpPprofListenPort: 8004
+cnmpKubeletListenPort: 8443
+
 # cnmp key：16位
 cnmpSecret: "asdfg12345qazxsw"
 # metrics 查询地址
@@ -348,7 +378,19 @@ cnmpKafkaAddr: "x"
 cnmpKafkaTopic: "codo_cnmp"
 cnmpKafkaDialTimeout: 3
 
+# agentServer 配置
+cnmpAgentServerAddr: "xxxxx"
+cnmpAgentServerMeshAddr: "xxxxx"
+cnmpAgentServerEnabled: true
+cnmpAgentServerNodeType: "xxxx"
 
+# 组网配置
+cnmpMeshSrcAgentId: "xxxx"
+cnmpMeshSrcAgentPort: 39000
+cnmpMeshWhiteIpList: []
+
+# Proxy配置
+cnmpAPIServer: "xxxx"
 
 # --------------------------- Cloud Agent Operator ------------------------------------ #
 
@@ -357,8 +399,6 @@ cloudAgentOperatorImage: "cloud-agent-operator:latest"
 aoPullSecret: ""
 aoRedisDB: 1
 aoOtelLogLevel: "INFO"
-aoOtelTraceEndpoint: ""
-aoOtelTraceInsecure: true
 
 aoAgentServerURL: "ws://codo-biz-agent-server:8002/api/v1/codo/agent?clientId=cloud-agent-operator:6666"
 aoBizID: "525"
@@ -394,9 +434,60 @@ noticePromListenPort: 8003
 noticePprofListenPort: 8004
 noticeLogLevel: debug
 noticeDBDebug: false
-noticeLarkCard:
-  verificationToken: "xxx"
-  encryptKey: "xxx"
 
-noticeFsAppID: "xxx"
-noticeFsAppSecret: "xxx"
+# 通知渠道配置
+noticeConfig:
+  # 通知渠道回调配置
+  hook:
+    larkCard:
+      verificationToken: "xxx"
+      encryptKey: "xxx"
+  # 通知渠道配置
+  notifyConfig:
+    # email 配置
+    email:
+      host: smtp.feishu.cn
+      port: 465
+      user: codo@codo.com
+      password: xxx
+
+    # 阿里通知配置
+    aliyun:
+      dxAccessId: LT____
+      dxAccessSecret: obyElU_____
+      dxSignName: CODO通知
+      dxTemplate: SMS_20___
+      dhAccessId: LTAI4F____
+      dhAccessSecret: wFqdUb____
+      dhTtsCode: TTS_21006____
+      dhCalledShowNumber: "xxx"
+      enable: true
+
+    # 腾讯通知配置
+    txyun:
+      dxAccessId: xxx
+      dxAccessSecret: xxx
+      dxSignName: CODO通知
+      dxTemplate: xxx
+      dxAppId: xxx
+      dhAccessId: xxx
+      dhAccessSecret: xxx
+      dhTemplate: xxx
+      dhAppId: xxx
+      enable: true
+    # 飞书配置
+    fsapp:
+      appId: ""
+      appSecret: ""
+
+    # 钉钉通知配置
+    ddapp:
+      appId: xxx
+      appSecret: xxx-xx
+      agentId: "xxx"
+
+    # 微信通知配置
+    wxapp:
+      agentId: 112233
+      agentSecret: xxx
+      cropId: xxx
