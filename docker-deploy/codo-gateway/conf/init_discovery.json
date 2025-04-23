@@ -2,61 +2,61 @@
 [
   {
     "service_name": "mg",
-    "upstream": "codo_mg:8000",
+    "upstream": "172.22.0.7:8000",
     "weight": 1,
     "status": 1
   },
   {
     "service_name": "agent",
-    "upstream": "codo-agent-server:8000",
+    "upstream": "172.22.0.19:8000",
     "weight": 1,
     "status": 1
   },
   {
     "service_name": "cmdb",
-    "upstream": "codo_cmdb:8000",
+    "upstream": "172.22.0.8:8000",
     "weight": 1,
     "status": 1
   },
   {
     "service_name": "cnmp-ws",
-    "upstream": "codo-cnmp:8002",
+    "upstream": "172.22.0.20:8002",
     "weight": 1,
     "status": 1
   },
   {
     "service_name": "cnmp",
-    "upstream": "codo-cnmp:8000",
+    "upstream": "172.22.0.20:8000",
     "weight": 1,
     "status": 1
   },
   {
     "service_name": "job",
-    "upstream": "codo_flow_control_api:8000",
-    "weight": 1,
-    "status": 1
-  },
-  {
-    "service_name": "kerrigan",
-    "upstream": "codo-kerrigan:8000",
+    "upstream": "172.22.0.11:8000",
     "weight": 1,
     "status": 1
   },
   {
     "service_name": "p",
-    "upstream": "codo_mg:8000",
+    "upstream": "172.22.0.7:8000",
     "weight": 1,
     "status": 1
   },
   {
     "service_name": "cron",
-    "upstream": "codo_flow_control_api:8000",
+    "upstream": "172.22.0.11:8000",
     "weight": 1,
     "status": 1
   },
   {
     "service_name": "noc",
-    "upstream": "codo_notice:8000",
+    "upstream": "172.22.0.21:8000",
+    "weight": 1,
+    "status": 1
+  },
+  {
+    "service_name": "k2",
+    "upstream": "172.22.0.22:8000",
     "weight": 1,
     "status": 1
   },

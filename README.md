@@ -34,6 +34,6 @@ codo
 - etcd: 3.5
 
 ## 部署方式
-- [k8s-helm 部署](./helm-deploy/README.md)
-- [docker 部署](./docker-deploy/README.md)
+- [k8s-helm 部署](./helm-deploy/README.md) 需要进入对应目录部署
+- [docker 部署](./docker-deploy/README.md) 需要进入对应目录部署
 - [安装 codo-agent](./codo-agent-install-steps.md)
