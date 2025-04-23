@@ -15,12 +15,14 @@ data:
     Date    : 2019/4/15 14:59
     Desc    : 配置文件
     """
-
+    import logging
     import os
+
     from websdk2.consts import const
 
     ROOT_DIR = os.path.dirname(__file__)
     debug = True
+    log_level = logging.DEBUG
     xsrf_cookies = False
     expire_seconds = 365 * 24 * 60 * 60
     cookie_secret = os.getenv('DEFAULT_COOKIE_SECRET', '{{ required "The cookieSecretPy is required" .Values.cookieSecretPy }}')
@@ -60,6 +62,8 @@ data:
     AGENT_MQ_PWD = os.getenv('AGENT_MQ_PWD', '{{ required "The rabbitmq.passwd is required" .Values.rabbitmq.passwd }}')
 
     api_gw = "http://{{ template "gateway.innerApi" . }}"
+    outer_api_gw = os.getenv('CODO_OUTER_API_GW', "https://{{ required "The gatewayIngressHost is required" .Values.gatewayIngressHost }}")  # 外部webhook端点
+
     settings_auth_key = "{{ required "The gatewayInnerApiToken is required" .Values.gatewayInnerApiToken }}"
 
     # 钉钉和飞书免密链接
@@ -80,6 +84,7 @@ data:
 
     settings = dict(
       debug=debug,
+      log_level=log_level,
       xsrf_cookies=xsrf_cookies,
       cookie_secret=cookie_secret,
       expire_seconds=expire_seconds,
@@ -87,6 +92,8 @@ data:
       notice_conf_map=notice_conf_map,
       settings_auth_key=settings_auth_key,
       api_gw=api_gw,
+      outer_api_gw=outer_api_gw,
+      outer_webhook_prefix=f"{outer_api_gw}/api/job-acc",
       dd_redirect=dd_redirect,
       fs_redirect=fs_redirect,
       m_url_redirect=m_url_redirect,

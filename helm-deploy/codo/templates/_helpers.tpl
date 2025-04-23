@@ -106,21 +106,21 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 
-
-{{- define "kerrigan.uname" -}}
-{{- printf "%s-%s" .Release.Name .Values.kerriganServiceName | trunc 63 | trimSuffix "-" -}}
+{{- define "k2.uname" -}}
+{{- printf "%s-%s" .Release.Name .Values.k2ServiceName | trunc 63 | trimSuffix "-" -}}
 {{- end }}
 
-{{- define "kerrigan.selectorLabels" -}}
+{{- define "k2.selectorLabels" -}}
 {{ include "label.common" . }}
-app.kubernetes.io/service: {{ required "kerriganServiceName is required" .Values.kerriganServiceName }}
-app.kubernetes.io/instance: {{ required "kerriganServiceName is required" .Values.kerriganServiceName }}-{{ .Release.Name }}
+app.kubernetes.io/service: {{ required "k2ServiceName is required" .Values.k2ServiceName }}
+app.kubernetes.io/instance: {{ required "k2ServiceName is required" .Values.k2ServiceName }}-{{ .Release.Name }}
 {{- end }}
 
-{{- define "kerrigan.labels" -}}
-{{ include "kerrigan.selectorLabels" . }}
+{{- define "k2.labels" -}}
+{{ include "k2.selectorLabels" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
+
 
 
 
@@ -155,6 +155,20 @@ app.kubernetes.io/instance: {{ required "flowCronjobServiceName is required" .Va
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "taskScheduler.uname" -}}
+{{- printf "%s-%s" .Release.Name .Values.flowTaskSchedulerServiceName | trunc 63 | trimSuffix "-" -}}
+{{- end }}
+
+{{- define "taskScheduler.selectorLabels" -}}
+{{ include "label.common" . }}
+app.kubernetes.io/service: {{ required "taskSchedulerServiceName is required" .Values.flowTaskSchedulerServiceName }}
+app.kubernetes.io/instance: {{ required "taskSchedulerServiceName is required" .Values.flowTaskSchedulerServiceName }}-{{ .Release.Name }}
+{{- end }}
+
+{{- define "taskScheduler.labels" -}}
+{{ include "taskScheduler.selectorLabels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
 
 
 {{- define "flowControl.uname" -}}

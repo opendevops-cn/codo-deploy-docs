@@ -12,7 +12,7 @@ data:
       NAME: "codo-cnmp" # 应用名称
       ENV: "PRD" # PRE/PRD/DEV 环境
       ADDR: "0.0.0.0:8000" # 监听地址
-      TIMEOUT: 30  # 超时时间(秒)
+      TIMEOUT: 30  # 超时时间
       PROTOCOL: "HTTP" # HTTP/HTTPS
       VERSION: "v1.0.0" # 版本号
       SECRET: "{{ required "The cnmpSecret is required" .Values.cnmpSecret }}" # AES对称加密密钥
@@ -24,8 +24,8 @@ data:
     # 可观测
     OTEL:
       TRACE:
-        ENDPOINT: ""  # 链路追踪地址
-        INSECURE: TRUE # 是否开启安全连接
+        ENDPOINT: "{{ .Values.otel.trace.endpoint }}"  # 链路追踪地址
+        INSECURE: {{ required "The otel.trace.insecure is required" .Values.otel.trace.insecure }} # 是否开启安全连接
       METRIC:
         ENABLE_EXEMPLAR: TRUE # 是否开启指标采样
       LOG:
@@ -56,8 +56,8 @@ data:
       DB_PORT: "{{ required "The mysql.port is required" .Values.mysql.port }}"
       DB_MaxIdleConns: 10
       DB_MaxOpenConns: 10
-      DB_ConnMaxLifetime: 600 # (秒)
-      DEBUG: true
+      DB_ConnMaxLifetime: 600
+      DEBUG: false
 
     # Redis
     REDIS:
@@ -69,7 +69,7 @@ data:
     TIANMEN:
       ADDR: "http://{{ template "gateway.innerApi" . }}"
       AUTH_KEY: "{{ required "The gatewayInnerApiToken is required" .Values.gatewayInnerApiToken }}"
-      TIMEOUT: 10 # (秒)
+      TIMEOUT: 10
 
     GRAFANA:
       ADDR: "{{ required "The cnmpGrafanaAddr is required" .Values.cnmpGrafanaAddr }}"
@@ -80,3 +80,21 @@ data:
       ADDR: "{{ required "The cnmpKafkaAddr is required" .Values.cnmpKafkaAddr }}"
       TOPIC: "{{ required "The cnmpKafkaTopic is required" .Values.cnmpKafkaTopic }}"
       DialTimeout: "{{ required "The cnmpKafkaDialTimeout is required" .Values.cnmpKafkaDialTimeout }}"
+
+    AGENT_SERVER:
+      SERVER_ADDR: "{{ required "The agentServerAddr is required" .Values.cnmpAgentServerAddr }}"
+      MESH_ADDR: "{{ required "The meshAddr is required" .Values.cnmpAgentServerMeshAddr }}"
+      ENABLED: {{ .Values.cnmpAgentServerEnabled }}
+      NODE_TYPE: "{{ .Values.cnmpAgentServerNodeType }}"
+
+    MESH:
+      WHITE_IP_LIST: 
+        {{- required "The whiteIpList is required" .Values.cnmpMeshWhiteIpList | toYaml | nindent 8 }}
+      SRC_AGENT_ID: "{{ required "The srcAgentId is required" .Values.cnmpMeshSrcAgentId }}"
+      SRC_AGENT_PORT: 39000
+    
+    PROXY:
+      ADDR: "0.0.0.0:8443"
+      ENABLE: true
+      NETWORK: "tcp"
+      API_SERVER: "{{ required "The srcAgentId is required" .Values.cnmpAPIServer }}"

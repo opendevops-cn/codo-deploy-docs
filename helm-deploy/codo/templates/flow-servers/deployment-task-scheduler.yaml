@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "taskScheduler.uname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "taskScheduler.labels" . | nindent 4 }}
+spec:
+  replicas: {{ required "taskSchedulerReplicas is required" .Values.flowTaskSchedulerReplicas }}
+  selector:
+    matchLabels:
+      {{- include "taskScheduler.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "taskScheduler.labels" . | nindent 8 }}
+    spec:
+      {{ include "imagepullsecret.define" . | nindent 6 }}
+      containers:
+        - image: {{ required "taskSchedulerImage is required" .Values.flowTaskSchedulerImage }}
+          name: {{ template "taskScheduler.uname" . }}-image
+          imagePullPolicy: Always
+          env:
+            - name: SERVICE_NAME
+              value: "task-scheduler"
+          resources:
+            limits:
+              cpu: {{ required "flowCronjobCPULimit is required" .Values.flowTaskSchedulerCPULimit }}
+              memory: {{ required "flowCronjobMemoryLimit is required" .Values.flowTaskSchedulerMemoryLimit }}
+              ephemeral-storage: {{ required "flowCronjobEphemeralStorageLimit is required" .Values.flowTaskSchedulerEphemeralStorageLimit }}
+            requests:
+              cpu: {{ required "flowCronjobCPURequire is required" .Values.flowTaskSchedulerCPURequire }}
+              memory: {{ required "flowCronjobMemoryRequire is required" .Values.flowTaskSchedulerMemoryRequire }}
+              ephemeral-storage: {{ required "flowCronjobEphemeralStorageRequire is required" .Values.flowTaskSchedulerEphemeralStorageRequire }}
+          ports:
+            - containerPort: 8000
+              name: http
+          volumeMounts:
+            - name: flow-conf
+              mountPath: /data/settings.py
+              subPath: settings.py
+      volumes:
+        - name: flow-conf
+          configMap:
+            name: {{ template "taskScheduler.uname" . }}
+

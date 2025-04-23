@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "flowCronjob.uname" . }}
+  name: {{ template "taskScheduler.uname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "flowCronjob.labels" . | nindent 4 }}
+    {{- include "taskScheduler.labels" . | nindent 4 }}
 data:
   settings.py: |+
     #!/usr/bin/env python
@@ -18,9 +18,11 @@ data:
 
     import os
     from websdk2.consts import const
+    import logging
 
     ROOT_DIR = os.path.dirname(__file__)
     debug = True
+    log_level = logging.DEBUG
     xsrf_cookies = False
     expire_seconds = 365 * 24 * 60 * 60
     cookie_secret = os.getenv('DEFAULT_COOKIE_SECRET', '{{ required "The cookieSecretPy is required" .Values.cookieSecretPy }}')
@@ -29,17 +31,17 @@ data:
     DEFAULT_DB_DBPORT = os.getenv('DEFAULT_DB_DBPORT', {{ required "The mysql.port is required" .Values.mysql.port }})
     DEFAULT_DB_DBUSER = os.getenv('DEFAULT_DB_DBUSER', '{{ required "The mysql.user is required" .Values.mysql.user }}')
     DEFAULT_DB_DBPWD = os.getenv('DEFAULT_DB_DBPWD', '{{ required "The mysql.passwd is required" .Values.mysql.passwd }}')
-    DEFAULT_DB_DBNAME = os.getenv('DEFAULT_DB_DBNAME', '{{ required "The flowCronjobDB is required" .Values.flowCronjobDB }}')
+    DEFAULT_DB_DBNAME = os.getenv('DEFAULT_DB_DBNAME', '{{ required "The flowCronjobDB is required" .Values.flowTaskSchedulerDB }}')
 
     READONLY_DB_DBHOST = os.getenv('READONLY_DB_DBHOST', '{{ required "The mysql.host is required" .Values.mysql.host }}')
     READONLY_DB_DBPORT = os.getenv('READONLY_DB_DBPORT', {{ required "The mysql.port is required" .Values.mysql.port }})
     READONLY_DB_DBUSER = os.getenv('READONLY_DB_DBUSER', '{{ required "The mysql.user is required" .Values.mysql.user }}')
     READONLY_DB_DBPWD = os.getenv('READONLY_DB_DBPWD', '{{ required "The mysql.passwd is required" .Values.mysql.passwd }}')
-    READONLY_DB_DBNAME = os.getenv('READONLY_DB_DBNAME', '{{ required "The flowCronjobDB is required" .Values.flowCronjobDB }}')
+    READONLY_DB_DBNAME = os.getenv('READONLY_DB_DBNAME', '{{ required "The flowCronjobDB is required" .Values.flowTaskSchedulerDB }}')
 
     DEFAULT_REDIS_HOST = os.getenv('DEFAULT_REDIS_HOST', '{{ required "The redis.host is required" .Values.redis.host }}')
     DEFAULT_REDIS_PORT = os.getenv('DEFAULT_REDIS_PORT', {{ required "The redis.port is required" .Values.redis.port }})
-    DEFAULT_REDIS_DB = os.getenv('DEFAULT_REDIS_DB', {{ required "The flowCronjobRedisDB is required" .Values.flowCronjobRedisDB }})
+    DEFAULT_REDIS_DB = os.getenv('DEFAULT_REDIS_DB', {{ required "The flowCronjobRedisDB is required" .Values.flowTaskSchedulerRedisDB }})
     DEFAULT_REDIS_AUTH = os.getenv('DEFAULT_REDIS_AUTH', True)
     DEFAULT_REDIS_CHARSET = os.getenv('DEFAULT_REDIS_CHARSET', 'utf-8')
     DEFAULT_REDIS_PASSWORD = os.getenv('DEFAULT_REDIS_PASSWORD', '{{ required "The redis.passwd is required" .Values.redis.passwd }}')
@@ -80,6 +82,7 @@ data:
 
     settings = dict(
       debug=debug,
+      log_level=log_level,
       xsrf_cookies=xsrf_cookies,
       cookie_secret=cookie_secret,
       expire_seconds=expire_seconds,

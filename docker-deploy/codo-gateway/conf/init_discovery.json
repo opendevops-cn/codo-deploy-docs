@@ -59,5 +59,11 @@
     "upstream": "codo_notice:8000",
     "weight": 1,
     "status": 1
+  },
+  {
+    "service_name": "k2",
+    "upstream": "codo_k2:8000",
+    "weight": 1,
+    "status": 1
   }
 ]

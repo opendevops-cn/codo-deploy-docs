@@ -1,4 +1,3 @@
-
 [
   {
     "url": "/api/acc/*",
@@ -179,30 +178,6 @@
       "prefix": "/api/cnmp/*",
       "service_name": "cnmp",
       "status": 1
-    }
-  },
-  {
-    "url": "/api/cron/*",
-    "rule": {
-      "props": {
-        "rewrite_replace": "/",
-        "rewrite_url_regex": "^/api/cron/"
-      },
-      "protocol": "http",
-      "prefix": "/api/cron/*",
-      "key": "/api/cron/*",
-      "service_name": "cron",
-      "propsData": {
-        "rewrite_replace": "/",
-        "rewrite_url_regex": "^/api/cron/"
-      },
-      "status": 1,
-      "plugins": [
-        "rewrite",
-        "mjwt",
-        "discovery",
-        "redis-logger"
-      ]
     }
   },
   {
@@ -402,5 +377,102 @@
       },
       "key": "/backend/cmdb/*"
     }
+  },
+  {
+    "prefix": "\/api\/cbb_area\/acc\/*",
+    "service_name": "cmdb",
+    "time": 1741776836528,
+    "status": 1,
+    "propsData": {
+      "rewrite_replace": "\/cbb_area\/na",
+      "rewrite_url_regex": "^\/api\/cbb_area\/acc",
+      "limit_req_rate": 5,
+      "limit_req_burst": 5
+    },
+    "_index": 2,
+    "remark": "区服管理免鉴权",
+    "_rowKey": 39,
+    "key": "\/api\/cbb_area\/acc\/*",
+    "plugins": [
+      "rewrite",
+      "discovery",
+      "limit-req"
+    ],
+    "props": {
+      "rewrite_replace": "\/cbb_area\/na",
+      "rewrite_url_regex": "^\/api\/cbb_area\/acc",
+      "limit_req_rate": 5,
+      "limit_req_burst": 5
+    },
+    "protocol": "http"
+  },
+  {
+    "prefix": "\/api\/k2-acc\/v1\/project\/config\/approval\/*",
+    "service_name": "k2",
+    "time": 1744801415661,
+    "status": 1,
+    "_index": 9,
+    "props": {
+      "rewrite_replace": "\/",
+      "rewrite_url_regex": "^\/api\/k2-acc\/"
+    },
+    "plugins": [
+      "discovery",
+      "rewrite"
+    ],
+    "key": "\/api\/k2-acc\/v1\/project\/config\/approval\/*",
+    "_rowKey": 10,
+    "propsData": {
+      "rewrite_replace": "\/",
+      "rewrite_url_regex": "^\/api\/k2-acc\/"
+    },
+    "protocol": "http"
+  },
+  {
+    "prefix": "\/api\/k2\/*",
+    "service_name": "k2",
+    "time": 1744699096616,
+    "status": 1,
+    "_index": 9,
+    "propsData": {
+      "rewrite_replace": "\/",
+      "rewrite_url_regex": "^\/api\/k2\/"
+    },
+    "plugins": [
+      "mjwt",
+      "discovery",
+      "redis-logger",
+      "rewrite"
+    ],
+    "key": "\/api\/k2\/*",
+    "_rowKey": 40,
+    "props": {
+      "rewrite_replace": "\/",
+      "rewrite_url_regex": "^\/api\/k2\/"
+    },
+    "protocol": "http"
+  },
+  {
+    "prefix": "\/api\/job-acc\/public\/*",
+    "service_name": "job",
+    "time": 1744788549530,
+    "status": 1,
+    "_index": 7,
+    "props": {
+      "rewrite_replace": "\/public\/",
+      "rewrite_url_regex": "^\/api\/job-acc\/public\/"
+    },
+    "plugins": [
+      "tracing",
+      "rewrite",
+      "discovery"
+    ],
+    "key": "\/api\/job-acc\/public\/*",
+    "_rowKey": 20,
+    "propsData": {
+      "rewrite_replace": "\/public\/",
+      "rewrite_url_regex": "^\/api\/job-acc\/public\/"
+    },
+    "protocol": "http"
   }
 ]

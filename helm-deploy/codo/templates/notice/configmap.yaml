@@ -27,8 +27,10 @@ data:
     # 可观测性相关
     otel:
       trace:
-        endpoint: "http://jaeger-xingyun-collector.tracing.svc.cluster.local:14268/api/traces"
-        insecure: true
+        # jaeger 配置 的 endpoint
+        endpoint: "{{ .Values.otel.trace.endpoint }}"
+        # endpoint 是否是 https
+        insecure: {{ required "The otel.trace.insecure is required" .Values.otel.trace.insecure }}
       metric:
         enableExemplar: true
       log:
@@ -61,59 +63,59 @@ data:
     # 通知渠道回调配置
     hook:
       larkCard:
-        verificationToken: "{{ required "The noticeLarkCard.verificationToken is required" .Values.noticeLarkCard.verificationToken }}"
-        encryptKey: "{{ required "The noticeLarkCard.encryptKey is required" .Values.noticeLarkCard.encryptKey }}"
+        verificationToken: "{{ required "The noticeConfig.hook.larkCard.verificationToken is required" .Values.noticeConfig.hook.larkCard.verificationToken }}"
+        encryptKey: "{{ .Values.noticeConfig.hook.larkCard.encryptKey }}"
 
     # 通知渠道配置
     notifyConfig:
       # email 配置
       email:
-        host: smtp.feishu.cn
-        port: 465
-        user: codo@huanle.com
-        password: xxx
+        host: {{ required "The noticeConfig.notifyConfig.email.host is required" .Values.noticeConfig.notifyConfig.email.host | quote }}
+        port: {{ required "The noticeConfig.notifyConfig.email.port is required" .Values.noticeConfig.notifyConfig.email.port }}
+        user: {{ required "The noticeConfig.notifyConfig.email.user is required" .Values.noticeConfig.notifyConfig.email.user | quote }}
+        password: {{ required "The noticeConfig.notifyConfig.email.password is required" .Values.noticeConfig.notifyConfig.email.password | quote }}
 
       # 阿里通知配置
       aliyun:
-        dxAccessId: LT____
-        dxAccessSecret: obyElU_____
-        dxSignName: CODO通知
-        dxTemplate: SMS_20___
-        dhAccessId: LTAI4F____
-        dhAccessSecret: wFqdUb____
-        dhTtsCode: TTS_21006____
-        dhCalledShowNumber: "xxx"
-        enable: true
+        dxAccessId: {{ required "The noticeConfig.notifyConfig.aliyun.dxAccessId is required" .Values.noticeConfig.notifyConfig.aliyun.dxAccessId | quote }}
+        dxAccessSecret: {{ required "The noticeConfig.notifyConfig.aliyun.dxAccessSecret is required" .Values.noticeConfig.notifyConfig.aliyun.dxAccessSecret | quote }}
+        dxSignName: {{ required "The noticeConfig.notifyConfig.aliyun.dxSignName is required" .Values.noticeConfig.notifyConfig.aliyun.dxSignName | quote }}
+        dxTemplate: {{ required "The noticeConfig.notifyConfig.aliyun.dxTemplate is required" .Values.noticeConfig.notifyConfig.aliyun.dxTemplate | quote }}
+        dhAccessId: {{ required "The noticeConfig.notifyConfig.aliyun.dhAccessId is required" .Values.noticeConfig.notifyConfig.aliyun.dhAccessId | quote }}
+        dhAccessSecret: {{ required "The noticeConfig.notifyConfig.aliyun.dhAccessSecret is required" .Values.noticeConfig.notifyConfig.aliyun.dhAccessSecret | quote }}
+        dhTtsCode: {{ required "The noticeConfig.notifyConfig.aliyun.dhTtsCode is required" .Values.noticeConfig.notifyConfig.aliyun.dhTtsCode | quote }}
+        dhCalledShowNumber: {{ required "The noticeConfig.notifyConfig.aliyun.dhCalledShowNumber is required" .Values.noticeConfig.notifyConfig.aliyun.dhCalledShowNumber | quote }}
+        enable: {{ required "The noticeConfig.notifyConfig.aliyun.enable is required" .Values.noticeConfig.notifyConfig.aliyun.enable }}
 
       # 腾讯通知配置
       txyun:
-        dxAccessId: xxx
-        dxAccessSecret: xxx
-        dxSignName: CODO通知
-        dxTemplate: xxx
-        dxAppId: xxx
-        dhAccessId: xxx
-        dhAccessSecret: xxx
-        dhTemplate: xxx
-        dhAppId: xxx
-        enable: true
+        dxAccessId: {{ required "The noticeConfig.notifyConfig.txyun.dxAccessId is required" .Values.noticeConfig.notifyConfig.txyun.dxAccessId | quote }}
+        dxAccessSecret: {{ required "The noticeConfig.notifyConfig.txyun.dxAccessSecret is required" .Values.noticeConfig.notifyConfig.txyun.dxAccessSecret | quote }}
+        dxSignName: {{ required "The noticeConfig.notifyConfig.txyun.dxSignName is required" .Values.noticeConfig.notifyConfig.txyun.dxSignName | quote }}
+        dxTemplate: {{ required "The noticeConfig.notifyConfig.txyun.dxTemplate is required" .Values.noticeConfig.notifyConfig.txyun.dxTemplate | quote }}
+        dxAppId: {{ required "The noticeConfig.notifyConfig.txyun.dxAppId is required" .Values.noticeConfig.notifyConfig.txyun.dxAppId | quote }}
+        dhAccessId: {{ required "The noticeConfig.notifyConfig.txyun.dhAccessId is required" .Values.noticeConfig.notifyConfig.txyun.dhAccessId | quote }}
+        dhAccessSecret: {{ required "The noticeConfig.notifyConfig.txyun.dhAccessSecret is required" .Values.noticeConfig.notifyConfig.txyun.dhAccessSecret | quote }}
+        dhTemplate: {{ required "The noticeConfig.notifyConfig.txyun.dhTemplate is required" .Values.noticeConfig.notifyConfig.txyun.dhTemplate | quote }}
+        dhAppId: {{ required "The noticeConfig.notifyConfig.txyun.dhAppId is required" .Values.noticeConfig.notifyConfig.txyun.dhAppId | quote }}
+        enable: {{ required "The noticeConfig.notifyConfig.txyun.enable is required" .Values.noticeConfig.notifyConfig.txyun.enable }}
 
       # 飞书配置
       fsapp:
-        appId: "{{ required "The noticeFsAppID is required" .Values.noticeFsAppID }}"
-        appSecret: "{{ required "The noticeFsAppSecret is required" .Values.noticeFsAppSecret }}"
+        appId: {{ required "The noticeConfig.notifyConfig.fsapp.appId is required" .Values.noticeConfig.notifyConfig.fsapp.appId | quote }}
+        appSecret: {{ required "The noticeConfig.notifyConfig.fsapp.appSecret is required" .Values.noticeConfig.notifyConfig.fsapp.appSecret | quote }}
 
       # 钉钉通知配置
       ddapp:
-        appId: xxx
-        appSecret: xxx-xx
-        agentId: "276892406"
+        appId: {{ required "The noticeConfig.notifyConfig.ddapp.appId is required" .Values.noticeConfig.notifyConfig.ddapp.appId | quote }}
+        appSecret: {{ required "The noticeConfig.notifyConfig.ddapp.appSecret is required" .Values.noticeConfig.notifyConfig.ddapp.appSecret | quote }}
+        agentId: {{ required "The noticeConfig.notifyConfig.ddapp.agentId is required" .Values.noticeConfig.notifyConfig.ddapp.agentId | quote }}
 
       # 微信通知配置
       wxapp:
-        agentId: 112233
-        agentSecret: xxx
-        cropId: xxx
+        agentId: {{ required "The noticeConfig.notifyConfig.wxapp.agentId is required" .Values.noticeConfig.notifyConfig.wxapp.agentId | quote }}
+        agentSecret: {{ required "The noticeConfig.notifyConfig.wxapp.agentSecret is required" .Values.noticeConfig.notifyConfig.wxapp.agentSecret | quote }}
+        cropId: {{ required "The noticeConfig.notifyConfig.wxapp.cropId is required" .Values.noticeConfig.notifyConfig.wxapp.cropId | quote }}
 
     # 数据库和缓存相关
     data:

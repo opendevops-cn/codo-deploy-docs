@@ -3,7 +3,7 @@ metadata:
   name: "codo-notice"
   env: PRE
   gatewayPrefix: "http://172.22.0.6:8888"
-  gatewayToken: "xxx"
+  gatewayToken: "123xxxx"
 
 # 中间件
 middleware:
@@ -18,12 +18,12 @@ etcdRegistry:
 # 可观测性相关
 otel:
   trace:
-    endpoint: "http://jaeger:14268/api/traces"
+    endpoint: "http://jaeger-xingyun-collector.tracing.svc.cluster.local:14268/api/traces"
     insecure: true
   metric:
     enableExemplar: true
   log:
-    level: debug
+    level: INFO
 
 # 运输层相关
 server:
@@ -40,13 +40,13 @@ server:
   prometheus:
     enable: true
     network: "tcp"
-    addr: "0.0.0.0:8003"
+    addr: "0.0.0.0:9091"
     path: "/metrics"
   # golang pprof 配置
   pprof:
     enable: true
     network: "tcp"
-    addr: "0.0.0.0:8004"
+    addr: "0.0.0.0:6060"
 
 # 通知渠道回调配置
 hook:
@@ -60,7 +60,7 @@ notifyConfig:
   email:
     host: smtp.feishu.cn
     port: 465
-    user: codo@huanle.com
+    user: codo@codo.com
     password: xxx
 
   # 阿里通知配置
@@ -113,6 +113,7 @@ data:
     prefix: codo_
   redis:
     addr: 172.22.0.3:6379
+    password: ss1917
     readTimeout: 0.2s
     writeTimeout: 0.2s
-    password: "ss1917"
+    db: 2
