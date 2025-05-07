@@ -207,6 +207,7 @@ k2MemoryRequire: 512Mi
 k2MemoryLimit: 2Gi
 k2EphemeralStorageRequire: 5Gi
 k2EphemeralStorageLimit: 5Gi
+k2NoAuthSignKey: "4MzU1MDI5MDUsIm5iZiI6MTY342ed26eb"
 
 
 # --------------------------- Flow Agent Log ------------------------------------ #

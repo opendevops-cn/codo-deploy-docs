@@ -34,6 +34,7 @@ data:
     # 和其他系统交互使用
     api_gw = "http://{{ template "gateway.innerApi" . }}"
     settings_auth_key = "{{ required "The gatewayInnerApiToken is required" .Values.gatewayInnerApiToken }}"
+    no_auth_sign_key = os.getenv("CODO_NO_AUTH_SIGN_KEY", '{{ required "The k2NoAuthSignKey is required" .Values.k2NoAuthSignKey }}')
 
     try:
       from local_settings import *
@@ -47,6 +48,7 @@ data:
       xsrf_cookies=xsrf_cookies,
       cookie_secret=cookie_secret,
       expire_seconds=expire_seconds,
+      no_auth_sign_key=no_auth_sign_key,
       app_name='codo-k2',
       databases={
         const.DEFAULT_DB_KEY: {
