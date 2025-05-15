@@ -14,3 +14,5 @@ agentServerImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-agent-server:lat
 cnmpImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-cnmp:latest
 noticeImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-notice:latest
 cloudAgentOperatorImage: registry.cn-shanghai.aliyuncs.com/ss1917/cloud-agent-operator:latest
+flowTaskSchedulerImage: registry.cn-shanghai.aliyuncs.com/ss1917/codo-flow-task-scheduler:latest
+k2Image: registry.cn-shanghai.aliyuncs.com/ss1917/codo-k2:latest
