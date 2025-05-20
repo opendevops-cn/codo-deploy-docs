@@ -407,28 +407,6 @@
     "protocol": "http"
   },
   {
-    "prefix": "\/api\/k2-acc\/v1\/project\/config\/approval\/*",
-    "service_name": "k2",
-    "time": 1744801415661,
-    "status": 1,
-    "_index": 9,
-    "props": {
-      "rewrite_replace": "\/",
-      "rewrite_url_regex": "^\/api\/k2-acc\/"
-    },
-    "plugins": [
-      "discovery",
-      "rewrite"
-    ],
-    "key": "\/api\/k2-acc\/v1\/project\/config\/approval\/*",
-    "_rowKey": 10,
-    "propsData": {
-      "rewrite_replace": "\/",
-      "rewrite_url_regex": "^\/api\/k2-acc\/"
-    },
-    "protocol": "http"
-  },
-  {
     "prefix": "\/api\/k2\/*",
     "service_name": "k2",
     "time": 1744699096616,
@@ -449,6 +427,28 @@
     "props": {
       "rewrite_replace": "\/",
       "rewrite_url_regex": "^\/api\/k2\/"
+    },
+    "protocol": "http"
+  },
+  {
+    "prefix": "\/api\/k2-acc\/public\/*",
+    "service_name": "k2",
+    "time": 1744699096616,
+    "status": 1,
+    "_index": 9,
+    "propsData": {
+      "rewrite_replace": "\/",
+      "rewrite_url_regex": "^\/api\/k2-acc\/public\/"
+    },
+    "plugins": [
+      "discovery",
+      "rewrite"
+    ],
+    "key": "\/api\/k2-acc\/public\/*",
+    "_rowKey": 40,
+    "props": {
+      "rewrite_replace": "\/",
+      "rewrite_url_regex": "^\/api\/k2-acc\/public\/"
     },
     "protocol": "http"
   },
