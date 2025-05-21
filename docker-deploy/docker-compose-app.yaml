@@ -52,7 +52,6 @@ services:
       - ./frontend/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - 80:80
-      - 443:443
     networks:
       codo:
         ipv4_address: 172.22.0.10
