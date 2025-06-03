@@ -1,5 +1,10 @@
 # helm安装
 
+## 资源不能低于如下配置
+- CPU: 6核
+- 内存: 10Gi
+- 存储: 80Gi
+
 ## 一键安装CODO
 ```shell
 bash ./quick_start/all_in_one.sh

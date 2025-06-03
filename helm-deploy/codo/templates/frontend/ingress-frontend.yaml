@@ -6,6 +6,7 @@ metadata:
   labels:
     {{- include "frontend.labels" . | nindent 4 }}
   annotations:
+    kubernetes.io/ingress.class: nginx
     nginx.org/websocket-services: "{{ template "frontend.uname" . }}"
     {{ required "The frontendIngressWS is required" .Values.frontendIngressWS | nindent 4 }}
     {{- with .Values.frontendIngressIPRestriction }}

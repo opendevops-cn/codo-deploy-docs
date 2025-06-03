@@ -93,13 +93,11 @@ frontendEphemeralStorageRequire: 5Gi
 frontendEphemeralStorageLimit: 5Gi
 frontendIngressHost: codo-dev.codo.com
 frontendIngressIPRestriction: |
-  # 放通内网
-  allow  10.0.0.0/8 ;
-  allow  192.168.0.0/16;
-  deny   all ;
+  # 注意：这里测试临时放开，实际上应只放开内网访问
+  allow   all ;
 frontendIngressWS: |
-  nginx.ingress.kubernetes.io/proxy-read-timeout: "600"  
-  nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+  nginx.ingress.kubernetes.io/proxy-read-timeout: "7200"
+  nginx.ingress.kubernetes.io/proxy-send-timeout: "7200"
 
 # --------------------------- Gateway ------------------------------------ #
 gatewayServiceName: gateway
