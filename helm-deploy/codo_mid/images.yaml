@@ -12,7 +12,7 @@ mysqlmage:
 
 # Etcd 镜像配置
 EtcdImage:
-  init_image: registry.cn-shanghai.aliyuncs.com/ss191/debian:stable-slim
+  init_image: registry.cn-shanghai.aliyuncs.com/ss1917/debian:stable-slim
   repository: registry.cn-shanghai.aliyuncs.com/ss1917/etcd
   tag: "3.5"
   pullPolicy: IfNotPresent
