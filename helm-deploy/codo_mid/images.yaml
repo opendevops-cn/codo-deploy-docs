@@ -1,0 +1,24 @@
+# Redis 镜像配置
+redisImage:
+  repository: registry.cn-shanghai.aliyuncs.com/ss1917/redis
+  tag: "6.2.11"
+  pullPolicy: IfNotPresent
+
+# MySQL 镜像配置
+mysqlmage:
+  repository: registry.cn-shanghai.aliyuncs.com/ss1917/mysql
+  tag: "8.0"
+  pullPolicy: IfNotPresent
+
+# Etcd 镜像配置
+EtcdImage:
+  init_image: registry.cn-shanghai.aliyuncs.com/ss191/debian:stable-slim
+  repository: registry.cn-shanghai.aliyuncs.com/ss1917/etcd
+  tag: "3.5"
+  pullPolicy: IfNotPresent
+
+# RabbitMQ 镜像配置
+MQImage:
+  repository: registry.cn-shanghai.aliyuncs.com/ss1917/rabbitmq
+  tag: 3.11
+  pullPolicy: IfNotPresent

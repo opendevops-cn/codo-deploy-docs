@@ -50,6 +50,11 @@ mid_values_file=$local_mid_values_file
 if [ "$mid_values_file" == "" ]; then
   mid_values_file="./codo_mid/values.yaml"
 fi
+mid_images_file=$local_mid_images_file
+if [ "$mid_images_file" == "" ]; then
+  mid_images_file="./codo_mid/images.yaml"
+fi
+
 namespace=$local_namespace
 if [ "$namespace" == "" ]; then
   namespace="codo-dev"
@@ -59,12 +64,14 @@ echo "namespace==${namespace}"
 echo "biz_values_file==${biz_values_file}"
 echo "biz_images_file==${biz_images_file}"
 echo "mid_values_file==${mid_values_file}"
+echo "mid_images_file==${mid_images_file}"
 
 echo "================ init environment done. ================"
 
 # 中间件依赖
 helm upgrade -n $namespace codo-mid ./codo_mid --install --create-namespace --wait --cleanup-on-fail \
 --values $mid_values_file \
+--values $mid_images_file \
 --set "namespace=$namespace"
 
 
