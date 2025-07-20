@@ -18,6 +18,12 @@ docker pull --platform=linux/amd64 registry.cn-shanghai.aliyuncs.com/ss1917/codo
 docker pull --platform=linux/amd64 registry.cn-shanghai.aliyuncs.com/ss1917/codo-k2:latest
 
 # 启动应用镜像并等待启动完成
+# 优先启动天门
+docker compose -f docker-compose-app.yaml up tianmen -d
+
+sleep 10
+
+# 启动业务服务
 docker compose -f docker-compose-app.yaml up -d
 if [ $? -ne 0 ]; then
   echo "应用镜像启动失败"
