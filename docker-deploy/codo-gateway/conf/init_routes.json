@@ -379,8 +379,9 @@
     }
   },
   {
-    "prefix": "/api/k2/*",
+    "url": "/api/k2/*",
     "rule": {
+      "prefix": "/api/k2/*",
       "service_name": "k2",
       "status": 1,
       "propsData": {
@@ -402,8 +403,9 @@
     }
   },
   {
-    "prefix": "/api/k2-acc/public/*",
+    "url": "/api/k2-acc/public/*",
     "rule": {
+      "prefix": "/api/k2-acc/public/*",
       "service_name": "k2",
       "status": 1,
       "props": {
@@ -424,8 +426,9 @@
     }
   },
   {
-    "prefix": "/api/job-acc/public/*",
+    "url": "/api/job-acc/public/*",
     "rule": {
+      "prefix": "/api/job-acc/public/*",
       "service_name": "job",
       "status": 1,
       "props": {
