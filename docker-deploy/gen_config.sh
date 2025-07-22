@@ -203,7 +203,93 @@ EOF
     info "notice 配置文件生成完成: notice/config.yaml"
 }
 
+generate_agent_server_config() {
+  info "正在生成 agent server 配置文件..."
+  cat > codo-agent-server/conf.yaml << EOF
+# HTTP 服务端口
+PORT: 8000
+# GRPC 通信端口
+RPC-PORT: 8001
+# websocket 连接专用端口
+WS-PORT: 8002
+# metrics 端口
+PROM-PORT: 8003
+# 性能采集端口
+PPROF-PORT: 8004
+# 本机服务监听地址
+BIND-ADDRESS: 0.0.0.0
+
+
+# 日志存放地址
+ROOT-PATH: /data/logs/agent-server.log
+# 日志等级
+LOG-LEVEL: DEBUG
+
+
+# MQ配置
+MQCONFIG:
+  ENABLED: false
+  SCHEMA: "amqp"
+  HOST: "127.0.0.1"
+  PORT: 5672
+  USERNAME: "admin"
+  PASSWORD: "123456"
+  VHOST: "codo"
+
+
+# MYSQL 配置
+DB-CONFIG:
+  DB-TYPE: mysql
+  DB-USER: root
+  DB-PASSWORD: 123456
+  DB-HOST: 127.0.0.1
+  DB-NAME: codo_agent_server
+  DB-TABLE-PREFIX: codo_
+  DB-FILE: ""
+  DB-PORT: 3306
+
+
+# REDIS 配置
+REDIS:
+  R-HOST: 127.0.0.1
+  R-PORT: 6379
+  R-PASSWORD: ""
+  R-DB: 1
+# REDIS 发布订阅配置
+# 用于:
+#  CDMB 任务同步
+#  CODO 任务分发
+PUBLISH:
+  P-HOST: 127.0.0.1
+  P-PORT: 6379
+  P-PASSWORD: ""
+  P-DB: 1
+  P-ENABLED: true
+
+# 组网配置, 用于 CODO 异地组网流量分发
+MESH-CONFIG:
+  MESH-PORT: 9998
+  SSL-PUBLIC-KEY-FILEPATH: /data/ca.crt
+  SSL-PRIVATE-KEY-FILEPATH: /data/ca.key
+
+# 第三方接口配置
+THIRD-PARTY-API-CONFIG:
+  AUTH-KEY: "${CODO_AUTH_KEY}"
+  CMDB-API-CONFIG:
+    REGISTER-AGENT-API: "${CODO_API_GW}/api/v2/cmdb/agent/"
+
+# OTEL 配置
+OTEL:
+  # pyroscope 服务地址
+  PYROSCOPE:
+    SERVER-ADDRESS: ""
+    BASIC-AUTH-USER: ""
+    BASIC-AUTH-PASSWORD: ""
+EOF
+}
+
 # 执行生成配置文件函数
 generate_notice_config
+generate_agent_server_config
 
 info "所有配置文件生成完成！"
