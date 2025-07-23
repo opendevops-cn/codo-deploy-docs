@@ -276,7 +276,7 @@ MESH-CONFIG:
 THIRD-PARTY-API-CONFIG:
   AUTH-KEY: "${CODO_AUTH_KEY}"
   CMDB-API-CONFIG:
-    REGISTER-AGENT-API: "${CODO_API_GW}/api/v2/cmdb/agent/"
+    REGISTER-AGENT-API: "${CODO_API_GW}/api/cmdb/api/v2/cmdb/agent/"
 
 # OTEL 配置
 OTEL:
