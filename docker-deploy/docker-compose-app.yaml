@@ -38,7 +38,7 @@ services:
       - CODO_GATEWAY.admin.jwt_secret=${DEFAULT_TOKEN_SECRET}
       - CODO_GATEWAY.admin.accounts=admin
       - CODO_GATEWAY.tokens=${CODO_GATEWAY_DEFAULT_API_TOKEN}
-      - CODO_GATEWAY.plugins=default_plugin,discovery_plugin,tracing_plugin,rewrite_plugin,jwt_plugin,codo_rbac_plugin,kafka-logger,redis-logger,limit-req,referer-restriction,ip-restriction,cors_plugin,sso2internal
+      - CODO_GATEWAY.plugins=default_plugin,discovery_plugin,tracing_plugin,rewrite_plugin,jwt_plugin,codo_rbac_plugin,kafka-logger,redis-logger,limit-req,referer-restriction,ip-restriction,cors_plugin,sso2internal,biz_check_plugin
     ports:
       - "8888:8888"
       - "11000:11000"
